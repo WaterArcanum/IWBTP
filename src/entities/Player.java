@@ -16,7 +16,7 @@ public class Player {
     // Bounds
     private double x;
     private double y;
-    private final int width = 25;
+    private final int width = 20;
     private final int height = 30;
 
     // Speeds

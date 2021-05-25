@@ -1,7 +1,6 @@
 package states;
 
 import entities.Player;
-import objects.Block;
 import objects.Map;
 
 import java.awt.*;
@@ -11,19 +10,14 @@ import static main.Game.*;
 public class PlayState extends GameState {
     private Player player;
     private Map map;
-    //private Block[] blocks;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
     }
 
     protected void init() {
-        //blocks = new Block[12];
         map = new Map("maps/map1.map");
-        player = new Player(100, 50);
-        /*for (int i = 0; i < 12; i++) {
-            blocks[i] = new Block((1+i%2)*100, i*75);
-        }*/
+        player = new Player(150, 150);
     }
 
     protected void tick() {
@@ -33,10 +27,6 @@ public class PlayState extends GameState {
     protected void draw(Graphics g) {
         player.draw(g);
         map.draw(g);
-
-        /*for (Block block : blocks) {
-            block.draw(g);
-        }*/
     }
 
     protected void keyPressed(int k) {

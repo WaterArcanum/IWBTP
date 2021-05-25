@@ -11,8 +11,8 @@ public class Map {
 
     public Map(String prath) {
         path = prath;
-        width = 10;
-        height = 10;
+        width = 24;
+        height = 24;
         blocks = new Block[height][width];
 
         /*for (int i = 0; i < blocks.length; i++) {
@@ -30,6 +30,8 @@ public class Map {
                 blocks[i][j].draw(g);
             }
         }
+        Spike s = new Spike(150, 150);
+        s.draw(g);
     }
 
     public void loadMap() {
@@ -37,11 +39,17 @@ public class Map {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             for (int y = 0; y < height; y++) {
+                String[] tokens = br.readLine().split("");
+
                 for (int x = 0; x < width; x++) {
-                    blocks[y][x] = new Block(x * Block.blockSize, y * Block.blockSize);
+                    int token = Integer.parseInt(tokens[x]);
+                    int xpos = token * Block.blockSize * x;
+                    int ypos = y * Block.blockSize;
+                    blocks[y][x] = new Block(xpos, ypos);
+                    System.out.println("Block placed at X:"+xpos+" | Y:"+ypos);
                 }
             }
-            String[] tokens = br.readLine().split("");
+            System.out.println();
         } catch (IOException e) {
             e.printStackTrace();
         }

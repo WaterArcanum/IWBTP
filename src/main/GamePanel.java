@@ -8,8 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
-    public static final int WIDTH = 900;
-    public static final int HEIGHT = 506;
+    public static final int WIDTH = 720;
+    public static final int HEIGHT = 720;
 
     private boolean isRunning = false;
 
@@ -53,6 +53,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     public void sleep(int w) {
         try {
+            if(w < 0) w = 0;
             Thread.sleep(w);
         } catch (InterruptedException e) {
             e.printStackTrace();
