@@ -8,4 +8,8 @@ public class Collision {
         Point p2 = new Point(x2, y2);
         return b.contains(p1) || b.contains(p2);
     }
+
+    public static boolean playerSpike(double x, double y, double w, double h, Spike s) {
+        return s.intersects(x, y, w, h);
+    }
 }

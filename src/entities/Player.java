@@ -2,6 +2,8 @@ package entities;
 
 import objects.Block;
 import objects.Collision;
+import objects.Spike;
+import states.PlayState;
 
 import javax.imageio.ImageIO;
 
@@ -34,7 +36,7 @@ public class Player {
     private boolean left = false;
     private boolean right = false;
     private boolean jumping = false;
-    private boolean falling = false;
+    private boolean falling = true;
     private boolean blockFall = false;
     private boolean topCollision = false;
 
@@ -49,7 +51,7 @@ public class Player {
         this.y = y;
     }
 
-    public void tick(Block[][] b) {
+    public void tick(Block[][] b, Spike[][] s) {
         int iX = (int)x;
         int iY = (int)y;
 
@@ -61,33 +63,44 @@ public class Player {
         left = !stopLeft;
         right = !stopRight;
 
-        for (int i = 0; i < b.length; i++) {
+        for (Block[] blocks : b) {
             for (int j = 0; j < b.length; j++) {
-                if (Collision.playerBlock(cRight, cTop + 2, cRight, cBottom - 1, b[i][j])) {
-                    //System.out.println("RIGHT");
-                    right = false;
-                }
-                if (Collision.playerBlock(cLeft - 1, cTop + 2, cLeft - 1, cBottom - 1, b[i][j])) {
-                    //System.out.println("LEFT");
-                    left = false;
-                }
-                if (Collision.playerBlock(cRight - 1, cTop, cLeft + 1, cTop, b[i][j])) {
-                    //System.out.println("TOP");
-                    y = b[i][j].getY() + height;
-                    jumping = false;
-                    falling = true;
-                }
-                if (Collision.playerBlock(cRight - 1, cBottom + 1, cLeft + 2, cBottom + 1, b[i][j])) {
-                    //System.out.println("BOTTOM");
-                    y = b[i][j].getY() - height;
-                    secondJump = false;
-                    falling = false;
-                    topCollision = true;
-                    blockFall = false;
-                } else {
-                    if (!topCollision && !jumping) {
+                if (blocks[j] != null) {
+                    if (Collision.playerBlock(cRight, cTop + 2, cRight, cBottom - 1, blocks[j])) {
+                        //System.out.println("RIGHT");
+                        right = false;
+                    }
+                    if (Collision.playerBlock(cLeft - 1, cTop + 2, cLeft - 1, cBottom - 1, blocks[j])) {
+                        //System.out.println("LEFT");
+                        left = false;
+                    }
+                    if (Collision.playerBlock(cRight - 1, cTop, cLeft + 1, cTop, blocks[j])) {
+                        //System.out.println("TOP");
+                        y = blocks[j].getY() + height;
+                        jumping = false;
                         falling = true;
-                        blockFall = true;
+                    }
+                    if (Collision.playerBlock(cRight - 1, cBottom + 1, cLeft + 2, cBottom + 1, blocks[j])) {
+                        //System.out.println("BOTTOM");
+                        y = blocks[j].getY() - height;
+                        secondJump = false;
+                        falling = false;
+                        topCollision = true;
+                        blockFall = false;
+                    } else {
+                        if (!topCollision && !jumping) {
+                            falling = true;
+                            blockFall = true;
+                        }
+                    }
+                }
+            }
+        }
+        for (Spike[] spikes : s) {
+            for (int j = 0; j < s.length; j++) {
+                if(spikes[j] != null) {
+                    if(Collision.playerSpike(x, y, width, height, spikes[j])) {
+                        System.out.println("dead");
                     }
                 }
             }

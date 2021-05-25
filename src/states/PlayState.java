@@ -21,7 +21,7 @@ public class PlayState extends GameState {
     }
 
     protected void tick() {
-        player.tick(map.getBlocks());
+        player.tick(map.getBlocks(), map.getSpikes());
     }
 
     protected void draw(Graphics g) {
