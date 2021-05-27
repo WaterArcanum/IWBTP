@@ -18,18 +18,18 @@ public class Player {
     // Bounds
     private double x;
     private double y;
-    private final int width = 20;
-    private final int height = 30;
+    private final int width = 15;
+    private final int height = 18;
 
     // Speeds
-    private final int moveSpeed = 5;
+    private final double moveSpeed = 3.5;
 
-    private final double jumpSpeed = 5;
-    private final double maxJumpDelta = 1.5;
+    private final double jumpSpeed = 3.5;
+    private final double maxJumpDelta = 2.5;
     private double jumpDelta = 0;
     private double currentJumpSpeed = jumpSpeed;
 
-    private final double maxFallSpeed = 5;
+    private final double maxFallSpeed = 3.5;
     private double currentFallSpeed = 0.1;
 
     // Movement
@@ -37,14 +37,17 @@ public class Player {
     private boolean right = false;
     private boolean jumping = false;
     private boolean falling = true;
-    private boolean blockFall = false;
+    private boolean fallingFromBlock = false;
+    private boolean bottomCollision = false;
     private boolean topCollision = false;
+    private boolean leftCollision = false;
+    private boolean rightCollision = false;
 
     // Key-based movement
     private boolean stopLeft = true;
     private boolean stopRight = true;
     private boolean stopJump = true;
-    private boolean secondJump = false;
+    private boolean hasSecondJump = true;
 
     public Player(int x, int y) {
         this.x = x;
@@ -66,33 +69,65 @@ public class Player {
         for (Block[] blocks : b) {
             for (int j = 0; j < b.length; j++) {
                 if (blocks[j] != null) {
-                    if (Collision.playerBlock(cRight, cTop + 2, cRight, cBottom - 1, blocks[j])) {
-                        //System.out.println("RIGHT");
+                    Block block = blocks[j];
+                    if (Collision.playerBlock(cRight-5, cBottom+1, block) ||
+                            Collision.playerBlock(cLeft+5, cBottom+1, block)) {
+//                        System.out.println("BOTTOM");
+                        y = block.getY() - height;
+                        hasSecondJump = true;
+                        falling = false;
+                        bottomCollision = true;
+                        fallingFromBlock = false;
+                    }
+                    if (Collision.playerBlock(cRight, cBottom-1, block) ||
+                            Collision.playerBlock(cRight, cTop+3, block)) {
+//                        System.out.println("RIGHT");
                         right = false;
                     }
-                    if (Collision.playerBlock(cLeft - 1, cTop + 2, cLeft - 1, cBottom - 1, blocks[j])) {
-                        //System.out.println("LEFT");
+                    if (Collision.playerBlock(cLeft-1, cBottom-1, block) ||
+                            Collision.playerBlock(cLeft-1, cTop+3, block)) {
+//                        System.out.println("LEFT");
                         left = false;
                     }
-                    if (Collision.playerBlock(cRight - 1, cTop, cLeft + 1, cTop, blocks[j])) {
-                        //System.out.println("TOP");
-                        y = blocks[j].getY() + height;
+                    if (Collision.playerBlock(cRight-5, cTop, block) ||
+                            Collision.playerBlock(cLeft+5, cTop, block)) {
+//                        System.out.println("TOP");
                         jumping = false;
                         falling = true;
                     }
-                    if (Collision.playerBlock(cRight - 1, cBottom + 1, cLeft + 2, cBottom + 1, blocks[j])) {
-                        //System.out.println("BOTTOM");
-                        y = blocks[j].getY() - height;
-                        secondJump = false;
-                        falling = false;
-                        topCollision = true;
-                        blockFall = false;
-                    } else {
-                        if (!topCollision && !jumping) {
-                            falling = true;
-                            blockFall = true;
-                        }
+                    if (!bottomCollision && !jumping) {
+                        falling = true;
+                        fallingFromBlock = true;
                     }
+//                    if (Collision.playerBlock(cRight - 1, cBottom + 1, cLeft + 2, cBottom + 1, blocks[j])) {
+//                        System.out.println("BOTTOM");
+//                        y = blocks[j].getY() - height;
+//                        hasSecondJump = true;
+//                        falling = false;
+//                        topCollision = true;
+//                        fallingFromBlock = false;
+//                    }
+//                    if (Collision.playerBlock(cRight - 1, cTop+2, cLeft + 1, cTop+2, blocks[j])) {
+//                        System.out.println("TOP");
+//                        double new_y = blocks[j].getY() + height;
+//                        if(new_y > y) {
+//                            y = new_y;
+//                        }
+//                        jumping = false;
+//                        falling = true;
+//                    }
+//                    if (Collision.playerBlock(cRight, cTop + 2, cRight, cBottom - 1, blocks[j])) {
+//                        System.out.println("RIGHT");
+//                        right = false;
+//                    }
+//                    if (Collision.playerBlock(cLeft - 1, cTop + 2, cLeft - 1, cBottom - 1, blocks[j])) {
+//                        System.out.println("LEFT");
+//                        left = false;
+//                    }
+//                    if (!topCollision && !jumping) {
+//                        falling = true;
+//                        fallingFromBlock = true;
+//                    }
                 }
             }
         }
@@ -101,12 +136,16 @@ public class Player {
                 if(spikes[j] != null) {
                     if(Collision.playerSpike(x, y, width, height, spikes[j])) {
                         System.out.println("dead");
+                        PlayState.die();
                     }
                 }
             }
         }
 
+        bottomCollision = false;
         topCollision = false;
+        leftCollision = false;
+        rightCollision = false;
 
         x -= left ? moveSpeed : 0;
         x += right ? moveSpeed : 0;
@@ -137,7 +176,7 @@ public class Player {
 
             if(currentFallSpeed < maxFallSpeed) {
                 // This is good enough :D
-                if(blockFall) currentFallSpeed += .15;
+                if(fallingFromBlock) currentFallSpeed += .15;
                 else currentFallSpeed += (currentFallSpeed > .25) ? .15 : (currentFallSpeed > .2) ? 0.05 : .05;
             }
         }
@@ -164,10 +203,10 @@ public class Player {
         if(KEY_RIGHT.contains(k)) {
             stopRight = false;
         }
-        if(KEY_JUMP.contains(k) && !jumping && !secondJump) {
+        if(KEY_JUMP.contains(k) && !jumping && hasSecondJump) {
             if(falling) {
                 jumpDelta = 0.1;
-                secondJump = true;
+                hasSecondJump = false;
             }
             jumping = true;
             falling = false;

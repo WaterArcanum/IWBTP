@@ -48,7 +48,7 @@ public class MenuState extends GameState {
         if(KEY_ENTER.contains(k)) {
             switch (current) {
                 case 0:
-                    gsm.states.push(new PlayState(gsm));
+                    GameStateManager.states.push(new PlayState(gsm));
                     break;
                 case 1:
                     break;

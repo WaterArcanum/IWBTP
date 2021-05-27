@@ -67,12 +67,14 @@ public class Map {
                     switch (token) {
                         case 1 -> blocks[y][x] = new Block(xpos, ypos);
                         case 2 -> spikes[y][x] = new Spike(xpos, ypos, 1);
+                        case 3 -> spikes[y][x] = new Spike(xpos, ypos, 2);
+                        case 4 -> spikes[y][x] = new Spike(xpos, ypos, 3);
+                        case 5 -> spikes[y][x] = new Spike(xpos, ypos, 4);
                     }
 //                    blocks[y][x] = new Block(xpos, ypos);
 //                    System.out.println("Block placed at X:"+xpos+" | Y:"+ypos);
                 }
             }
-            System.out.println();
         } catch (IOException e) {
             e.printStackTrace();
         }

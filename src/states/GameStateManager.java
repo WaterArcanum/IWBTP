@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.Stack;
 
 public class GameStateManager {
-    protected final Stack<GameState> states;
+    public static Stack<GameState> states;
 
     public GameStateManager() {
         states = new Stack<>();
