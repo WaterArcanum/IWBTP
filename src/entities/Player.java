@@ -1,8 +1,6 @@
 package entities;
 
-import objects.Block;
-import objects.Collision;
-import objects.Spike;
+import objects.*;
 import states.PlayState;
 
 import javax.imageio.ImageIO;
@@ -49,12 +47,12 @@ public class Player {
     private boolean stopJump = true;
     private boolean hasSecondJump = true;
 
-    public Player(int x, int y) {
+    public Player(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public void tick(Block[][] b, Spike[][] s) {
+    public void tick(Block[][] b, Spike[][] s, SavePoint[][] sp, Goal g) {
         int iX = (int)x;
         int iY = (int)y;
 
@@ -99,35 +97,6 @@ public class Player {
                         falling = true;
                         fallingFromBlock = true;
                     }
-//                    if (Collision.playerBlock(cRight - 1, cBottom + 1, cLeft + 2, cBottom + 1, blocks[j])) {
-//                        System.out.println("BOTTOM");
-//                        y = blocks[j].getY() - height;
-//                        hasSecondJump = true;
-//                        falling = false;
-//                        topCollision = true;
-//                        fallingFromBlock = false;
-//                    }
-//                    if (Collision.playerBlock(cRight - 1, cTop+2, cLeft + 1, cTop+2, blocks[j])) {
-//                        System.out.println("TOP");
-//                        double new_y = blocks[j].getY() + height;
-//                        if(new_y > y) {
-//                            y = new_y;
-//                        }
-//                        jumping = false;
-//                        falling = true;
-//                    }
-//                    if (Collision.playerBlock(cRight, cTop + 2, cRight, cBottom - 1, blocks[j])) {
-//                        System.out.println("RIGHT");
-//                        right = false;
-//                    }
-//                    if (Collision.playerBlock(cLeft - 1, cTop + 2, cLeft - 1, cBottom - 1, blocks[j])) {
-//                        System.out.println("LEFT");
-//                        left = false;
-//                    }
-//                    if (!topCollision && !jumping) {
-//                        falling = true;
-//                        fallingFromBlock = true;
-//                    }
                 }
             }
         }
@@ -139,6 +108,18 @@ public class Player {
                     }
                 }
             }
+        }
+        for (SavePoint[] savePoints : sp) {
+            for (int j = 0; j < s.length; j++) {
+                if(savePoints[j] != null) {
+                    if(Collision.playerSave(x, y, width, height, savePoints[j])) {
+                        PlayState.save(savePoints[j]);
+                    }
+                }
+            }
+        }
+        if(Collision.playerGoal(iX, iY, g)) {
+            PlayState.progress();
         }
 
         bottomCollision = false;

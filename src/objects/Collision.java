@@ -17,4 +17,13 @@ public class Collision {
     public static boolean playerSpike(double x, double y, double w, double h, Spike s) {
         return s.intersects(x, y, w, h);
     }
+
+    public static boolean playerSave(double x, double y, double w, double h, SavePoint sp) {
+        return sp.intersects(x, y, w, h);
+    }
+
+    public static boolean playerGoal(int x, int y, Goal g) {
+        Point p = new Point(x, y);
+        return g.contains(p);
+    }
 }
