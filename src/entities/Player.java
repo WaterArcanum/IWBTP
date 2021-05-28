@@ -79,13 +79,13 @@ public class Player {
                         bottomCollision = true;
                         fallingFromBlock = false;
                     }
-                    if (Collision.playerBlock(cRight, cBottom-1, block) ||
-                            Collision.playerBlock(cRight, cTop+3, block)) {
+                    if (Collision.playerBlock(cRight+1, cBottom-1, block) ||
+                            Collision.playerBlock(cRight+1, cTop+3, block)) {
 //                        System.out.println("RIGHT");
                         right = false;
                     }
-                    if (Collision.playerBlock(cLeft-1, cBottom-1, block) ||
-                            Collision.playerBlock(cLeft-1, cTop+3, block)) {
+                    if (Collision.playerBlock(cLeft-2, cBottom-1, block) ||
+                            Collision.playerBlock(cLeft-2, cTop+3, block)) {
 //                        System.out.println("LEFT");
                         left = false;
                     }
@@ -135,7 +135,6 @@ public class Player {
             for (int j = 0; j < s.length; j++) {
                 if(spikes[j] != null) {
                     if(Collision.playerSpike(x, y, width, height, spikes[j])) {
-                        System.out.println("dead");
                         PlayState.die();
                     }
                 }
