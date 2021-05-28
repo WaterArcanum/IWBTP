@@ -14,12 +14,12 @@ public class PlayState extends GameState {
     private static GameStateManager gsm;
     private static Map map;
     private static Player player;
-    private static final AudioManager[] bgm =  {
-            new AudioManager("imgs/stage3.wav"),
-            new AudioManager("imgs/stage3.wav"),
-            new AudioManager("imgs/stage3.wav")
+    private static final AudioManager[] bgm = {
+            new AudioManager("resources/audio/stage1.wav"),
+            new AudioManager("resources/audio/stage2.wav"),
+            new AudioManager("resources/audio/stage3.wav")
     };
-    private static final AudioManager deathSound = new AudioManager("imgs/death.wav");
+    private static final AudioManager deathSound = new AudioManager("resources/audio/death.wav");
     private static int level;
     private static int savePointId;
 
@@ -28,10 +28,10 @@ public class PlayState extends GameState {
     }
 
     protected void init() {
-        String path = "maps/map" + (level + 1) + ".map";
+        String path = "resources/maps/map" + (level + 1) + ".map";
         map = new Map(path);
-        double x = 260;
-        double y = 90;
+        double x = 30;
+        double y = 30;
         for (SavePoint[] savePoints : map.getSavePoints()) {
             for (SavePoint point : savePoints) {
                 if(point != null) {
@@ -68,18 +68,24 @@ public class PlayState extends GameState {
         savePointId = sp.getId();
     }
 
+    public void exit() {
+        bgm[level].stop(false);
+        GameStateManager.states.push(new MenuState(gsm));
+    }
+
     protected void tick() {
         player.tick(map.getBlocks(), map.getSpikes(), map.getSavePoints(), map.getGoal());
     }
 
     protected void draw(Graphics g) {
-        player.draw(g);
         map.draw(g);
+        player.draw(g);
     }
 
     protected void keyPressed(int k) {
         player.keyPressed(k);
         if(KEY_RESET.contains(k)) restart();
+        if(KEY_EXIT.contains(k)) exit();
     }
 
     protected void keyReleased(int k) {

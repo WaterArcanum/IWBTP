@@ -6,14 +6,13 @@ import java.io.IOException;
 
 public class AudioManager {
     private Clip clip;
-    private FloatControl fc;
 
     public AudioManager(String filename) {
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(new File(filename));
             clip = AudioSystem.getClip();
             clip.open(ais);
-            fc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            FloatControl fc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             fc.setValue(-20);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();

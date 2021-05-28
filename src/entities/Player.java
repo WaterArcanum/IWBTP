@@ -168,7 +168,7 @@ public class Player {
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
         try {
-            Image img = ImageIO.read(new File("imgs/img.png"));
+            Image img = ImageIO.read(new File("resources/imgs/img.png"));
             g.drawImage(img, (int)x, (int)y, null);
         } catch (IOException e) {
             e.printStackTrace();
