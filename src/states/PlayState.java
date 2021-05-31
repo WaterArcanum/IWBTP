@@ -38,7 +38,7 @@ public class PlayState extends GameState {
         else if(level == 3) level = 0;
         String path = "resources/maps/map" + (level + 1) + ".map";
         map = new Map(path);
-        double x = level <= 3 ? 30 : 360;
+        double x = level < 3 ? 30 : 360;
         double y = x;
         // Set x/y position if there is a savepoint activated
         for (SavePoint[] savePoints : map.getSavePoints()) {
