@@ -73,35 +73,37 @@ public class Player {
         left = !stopLeft;
         right = !stopRight;
 
+        // Check block collision
         for (Block[] blocks : b) {
             for (int j = 0; j < b.length; j++) {
                 if (blocks[j] != null) {
                     Block block = blocks[j];
+                    // Bottom collision
                     if (Collision.playerBlock(cRight-5, cBottom+1, block) ||
                             Collision.playerBlock(cLeft+5, cBottom+1, block)) {
-//                        System.out.println("BOTTOM");
                         y = block.getY() - height;
                         hasSecondJump = true;
                         falling = false;
                         bottomCollision = true;
                         fallingFromBlock = false;
                     }
+                    // Right collision
                     if (Collision.playerBlock(cRight+3, cBottom-1, block) ||
                             Collision.playerBlock(cRight+3, cTop+3, block)) {
-//                        System.out.println("RIGHT");
                         right = false;
                     }
+                    // Left collision
                     if (Collision.playerBlock(cLeft-3, cBottom-1, block) ||
                             Collision.playerBlock(cLeft-3, cTop+3, block)) {
-//                        System.out.println("LEFT");
                         left = false;
                     }
+                    // Top collision
                     if (Collision.playerBlock(cRight-5, cTop, block) ||
                             Collision.playerBlock(cLeft+5, cTop, block)) {
-//                        System.out.println("TOP");
                         jumping = false;
                         falling = true;
                     }
+                    // Enable falling physics
                     if (!bottomCollision && !jumping) {
                         falling = true;
                         fallingFromBlock = true;
@@ -109,6 +111,7 @@ public class Player {
                 }
             }
         }
+        // Check spike collision
         for (Spike[] spikes : s) {
             for (int j = 0; j < s.length; j++) {
                 if(spikes[j] != null) {
@@ -119,6 +122,7 @@ public class Player {
                 }
             }
         }
+        // Check savepoint collision
         for (SavePoint[] savePoints : sp) {
             for (int j = 0; j < s.length; j++) {
                 if(savePoints[j] != null) {
@@ -128,6 +132,7 @@ public class Player {
                 }
             }
         }
+        // Check block collision
         if(Collision.playerGoal(x, y, g)) {
             PlayState.win();
         }
@@ -142,17 +147,12 @@ public class Player {
 
         if(!stopJump && jumpDelta < maxJumpDelta) {
             jumpDelta += 0.1;
-            //System.out.println("jd: " + jumpDelta);
         }
 
         if(jumping) {
             y -= currentJumpSpeed;
 
-            //System.out.println("cjs: " + currentJumpSpeed);
-            //currentJumpSpeed -= 0.1;
-
             if(jumpDelta >= maxJumpDelta || stopJump) {
-                //currentJumpSpeed = jumpSpeed;
                 currentJumpSpeed += (currentJumpSpeed > .2) ? 0.05 : 0.005;
                 jumping = false;
                 falling = true;
@@ -166,7 +166,7 @@ public class Player {
             y += currentFallSpeed;
 
             if(currentFallSpeed < maxFallSpeed) {
-                // This is good enough :D
+                // Falling speed calculation magic
                 if(fallingFromBlock) currentFallSpeed += .15;
                 else currentFallSpeed +=
                         (currentFallSpeed > .25) ? .15 :
@@ -180,11 +180,13 @@ public class Player {
 
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
+        // Facing = { 0 : LEFT || 1 : RIGHT }
         int drawX = (int)x - ((facing-1) * width);
         int drawY = (int)y;
         int drawWidth = width * ((facing * 2) + -1);
         String pathname = "resources/imgs/";
         if(!dead) {
+            // Ticks for sprite changes
             if (left) {
                 facing = 0;
                 if (!jumping && !falling) {
@@ -226,6 +228,7 @@ public class Player {
         try {
             Image img = ImageIO.read(new File(pathname));
             g.drawImage(img, drawX, drawY, drawWidth, height, null);
+            // Tutorial arrows
             if(PlayState.getLevel() == 3 && PlayState.getTime() < 15000) {
                 img = ImageIO.read(new File("resources/imgs/arrows.png"));
                 g.drawImage(img, (int)x-55, (int)y-60, null);
@@ -233,7 +236,6 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        g.fillRect((int)x, (int)y, width, height);
     }
 
     public void keyPressed(int k) {

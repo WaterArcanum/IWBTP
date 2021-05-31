@@ -33,8 +33,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     public synchronized void run() {
         long start, elapsed, wait;
 
-        gsm = new GameStateManager(); // TODO: Move maybe
+        gsm = new GameStateManager();
 
+        // Ensure the game always runs at constant speed
         while(isRunning) {
             start = System.nanoTime();
 
@@ -66,9 +67,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        g.clearRect(0, 0, WIDTH, HEIGHT); // TODO: Delete maybe
-
         gsm.draw(g);
     }
 

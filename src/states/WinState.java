@@ -1,7 +1,6 @@
 package states;
 
 import main.GamePanel;
-import main.Player;
 import objects.Map;
 
 import java.awt.*;
@@ -31,6 +30,7 @@ public class WinState extends GameState {
         return result <= 100 ? result : 100;
     }
 
+    // Change colour from $colorStart to $color based on $val percentage between $min & $max
     private static void colorLerp(Graphics g, int min, int max, long val, int color, int opacity,
                                   int colorStart, int opacityStart) {
         float percent = percent(min, max, val) / 100;
@@ -47,10 +47,11 @@ public class WinState extends GameState {
         int transition2 = 2684;
         int bgColor = 76;
         int bgOpacity = 150;
-        int textYOffset = 50;
-        int textXDefault = 250;
-        int textYDefault = height / 4;
+        int textYOffset = 72;
+        int textXDefault = 100;
+        int textYDefault = height / 3;
         long timeElapsed = finish - start;
+        // Timed text on screen
         if(timeElapsed < transition1) {
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, width, height);
@@ -62,7 +63,7 @@ public class WinState extends GameState {
         if(timeElapsed > transition2) {
             g.setColor(new Color(bgColor, bgColor, bgColor, bgOpacity));
             g.fillRect(0, 0, width, height);
-            g.setFont(new Font("Exo", Font.BOLD, 18));
+            g.setFont(new Font("Exo", Font.BOLD, 36));
             g.setColor(Color.WHITE);
         }
         if(timeElapsed > 3363) {
@@ -70,10 +71,10 @@ public class WinState extends GameState {
         }
         if(timeElapsed > 3838) {
             int deaths = PlayState.getDeaths();
-            g.drawString(deaths + " death" + (deaths != 1 ? "s" : ""), textXDefault, textYDefault + textYOffset);
+            g.drawString((deaths > 1 ? deaths : "No") + " death" + (deaths != 1 ? "s" : ""), textXDefault, textYDefault + textYOffset);
         }
         if(timeElapsed > 4312) {
-            double time = PlayState.getTime() / 1000f;
+            double time = (Math.round(PlayState.getTime() * 100.0) / 100.0) / 1000;
             g.drawString(time + " seconds", textXDefault, textYDefault + textYOffset * 2);
         }
         if(timeElapsed > 4803) {

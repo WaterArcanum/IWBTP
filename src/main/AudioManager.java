@@ -27,10 +27,6 @@ public class AudioManager {
         }
     }
 
-    public void start() {
-        clip.start();
-    }
-
     public void start(boolean loop, boolean startAnew) {
         if(startAnew) clip.setMicrosecondPosition(0);
         clip.start();

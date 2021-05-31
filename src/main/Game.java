@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Game {
+    // List of keys to use for interaction
     public static ArrayList<Integer> KEY_DOWN =
             new ArrayList<>(Arrays.asList(KeyEvent.VK_DOWN, KeyEvent.VK_S, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD5));
     public static ArrayList<Integer> KEY_UP = new ArrayList<>(Arrays.asList(KeyEvent.VK_UP, KeyEvent.VK_W));

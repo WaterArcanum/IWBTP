@@ -36,7 +36,6 @@ public class DeathState extends GameState {
         map.draw(g);
         player.draw(g);
         long timeElapsed = finish - start;
-        int width = GamePanel.WIDTH;
         int height = GamePanel.HEIGHT;
         if(timeElapsed > 500) {
             g.setColor(new Color(76, 76, 76, 150));

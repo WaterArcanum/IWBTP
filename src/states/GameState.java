@@ -1,9 +1,6 @@
 package states;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public abstract class GameState {
     protected GameStateManager gsm;

@@ -1,6 +1,5 @@
 package objects;
 
-import main.GamePanel;
 import states.PlayState;
 
 import javax.imageio.ImageIO;

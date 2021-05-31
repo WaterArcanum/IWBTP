@@ -14,8 +14,6 @@ public class SavePoint extends Rectangle {
     private final int y;
 
     private final int id;
-    private final int width = blockSize;
-    private final int height = blockSize;
 
     private Image imgOff;
     private Image imgOn;
@@ -24,6 +22,8 @@ public class SavePoint extends Rectangle {
         this.x = x;
         this.y = y;
         this.id = id;
+        int width = blockSize;
+        int height = blockSize;
         setBounds(x, y, width, height);
         try {
             imgOff = ImageIO.read(new File("resources/imgs/save.png"));

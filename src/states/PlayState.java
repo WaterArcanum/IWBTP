@@ -1,6 +1,5 @@
 package states;
 
-import main.GamePanel;
 import main.Player;
 import main.AudioManager;
 import objects.Map;
@@ -23,7 +22,7 @@ public class PlayState extends GameState {
     };
     private static final AudioManager deathSound = new AudioManager("resources/audio/death.wav", -10);
     private static final AudioManager winSound = new AudioManager("resources/audio/win.wav", -10);
-    private static int level=4;
+    private static int level;
     private static int deaths;
     private static long start;
     private static long finish;
@@ -41,6 +40,7 @@ public class PlayState extends GameState {
         map = new Map(path);
         double x = level <= 3 ? 30 : 360;
         double y = x;
+        // Set x/y position if there is a savepoint activated
         for (SavePoint[] savePoints : map.getSavePoints()) {
             for (SavePoint point : savePoints) {
                 if(point != null) {
@@ -55,6 +55,7 @@ public class PlayState extends GameState {
         bgm[level].start(true, false);
     }
 
+    // Move to next level
     public static void progress() {
         start = System.currentTimeMillis();
         savePointId = 0;
@@ -65,6 +66,7 @@ public class PlayState extends GameState {
         PlayState.restart();
     }
 
+    // Initiate win screen
     public static void win() {
         savePointId = 0;
         bgm[level].stop(true);
@@ -73,13 +75,14 @@ public class PlayState extends GameState {
         else GameStateManager.states.push(new WinState(gsm, map));
     }
 
+    // Restart the level
     public static void restart() {
-        //bgm.stop(true);
         deathSound.stop(false);
         winSound.stop(false);
         GameStateManager.states.push(new PlayState(gsm));
     }
 
+    // Initiate death screen
     public static void die() {
         deaths++;
         bgm[level].stop(true);
@@ -91,6 +94,7 @@ public class PlayState extends GameState {
         savePointId = sp.getId();
     }
 
+    // Exit to menu
     public static void exit() {
         bgm[level].stop(false);
         deathSound.stop(false);

@@ -12,13 +12,11 @@ public class Spike extends Polygon {
     public static int blockSize = Block.blockSize;
     private static final int thinness = 1;
 
-    private final int width = blockSize;
-    private final int height = blockSize;
     private Image img;
     private int tick;
     private boolean tickUp = true;
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public Spike(int x, int y, int rotation) {
         this.x = x;
@@ -33,6 +31,7 @@ public class Spike extends Polygon {
         int y0 = y;
         int y1 = y - (blockSize / 2);
         int y2 = y - blockSize;
+        // The spike sprite was way too ugly.
         String pathname = "resources/imgs/spike";
         switch (rotation) {
             // Facing up
@@ -75,6 +74,7 @@ public class Spike extends Polygon {
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D)g.create();
         switch(PlayState.getLevel()) {
+            // Ticks for sprite changes
             case 0 -> {
                 if(tickUp) tick++;
                 else tick--;
@@ -83,23 +83,31 @@ public class Spike extends Polygon {
                 float percent = WinState.percent(0, 100, tick);
                 float color = 180 * (percent/100);
                 g2d.setColor(new Color((int)color, 0, (int)color));
-//                if(percent < 100) g2d.setColor(new Color(180, 0, 193));
-//                else if (tick < 200) g2d.setColor(new Color(165, 0, 177));
-//                else if (tick < 300) g2d.setColor(new Color(126, 1, 137));
-//                else if (tick < 400) g2d.setColor(new Color(165, 0, 177));
-//                else if (tick < 500) g2d.setColor(new Color(180, 0, 193));
-//                else tick = -1;
                 g2d.draw(this);
             }
             case 1 -> {
-//                g2d.setColor(new Color(176, 176, 176));
-//                g2d.fill(this);
-                g.drawImage(img, x,y,null);
+                if(tickUp) tick++;
+                else tick--;
+                if(tick >= 100) tickUp = false;
+                if(tick <= 50) tickUp = true;
+                float percent = WinState.percent(0, 100, tick);
+                float color = 153 * (percent/100);
+                g2d.setColor(new Color((int)color, (int)color, (int)color, (int)color));
+                g2d.draw(this);
             }
             case 2 -> {
                 g2d.setColor(new Color(255, 0, 0, 100));
                 g2d.draw(this);
                 g2d.setColor(new Color(168, 0, 0, 50));
+                g2d.fill(this);
+
+                if(tickUp) tick++;
+                else tick--;
+                if(tick >= 100) tickUp = false;
+                if(tick <= 50) tickUp = true;
+                float percent = WinState.percent(0, 100, tick);
+                float color = 168 * (percent/100);
+                g2d.setColor(new Color((int)color, 0, 0, 50));
                 g2d.fill(this);
             }
             case 3 -> {

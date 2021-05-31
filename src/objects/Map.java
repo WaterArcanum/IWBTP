@@ -7,16 +7,17 @@ import java.awt.*;
 import java.io.*;
 
 public class Map {
-    private String path;
-    private int width, height;
+    private final String path;
+    private final int width;
+    private final int height;
 
     private final Block[][] blocks;
     private final Spike[][] spikes;
     private final SavePoint[][] savePoints;
     private Goal goal;
 
-    public Map(String prath) {
-        path = prath;
+    public Map(String path) {
+        this.path = path;
         width = 24;
         height = 24;
         blocks = new Block[height][width];
@@ -125,6 +126,7 @@ public class Map {
                     int xpos = x * Block.blockSize;
                     int ypos = y * Block.blockSize;
                     int even = y % 2;
+                    // Check every token in the map, assign object to position on map
                     switch (token) {
                         case 1 -> blocks[y][x] = new Block(xpos, ypos, even);
                         case 2 -> spikes[y][x] = new Spike(xpos, ypos, 1);
@@ -137,8 +139,6 @@ public class Map {
                             savesIdBuffer++;
                         }
                     }
-//                    blocks[y][x] = new Block(xpos, ypos);
-//                    System.out.println("Block placed at X:"+xpos+" | Y:"+ypos);
                 }
             }
         } catch (IOException e) {
