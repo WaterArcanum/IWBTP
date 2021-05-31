@@ -8,12 +8,20 @@ public class AudioManager {
     private Clip clip;
 
     public AudioManager(String filename) {
+        init(filename, -20);
+    }
+
+    public AudioManager(String filename, int gain) {
+        init(filename, gain);
+    }
+
+    public void init(String filename, int gain) {
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(new File(filename));
             clip = AudioSystem.getClip();
             clip.open(ais);
             FloatControl fc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            fc.setValue(-20);
+            fc.setValue(gain);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }

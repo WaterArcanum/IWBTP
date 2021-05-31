@@ -76,8 +76,9 @@ public class Map {
                     int token = Integer.parseInt(tokens[x]);
                     int xpos = x * Block.blockSize;
                     int ypos = y * Block.blockSize;
+                    int even = y % 2;
                     switch (token) {
-                        case 1 -> blocks[y][x] = new Block(xpos, ypos);
+                        case 1 -> blocks[y][x] = new Block(xpos, ypos, even);
                         case 2 -> spikes[y][x] = new Spike(xpos, ypos, 1);
                         case 3 -> spikes[y][x] = new Spike(xpos, ypos, 2);
                         case 4 -> spikes[y][x] = new Spike(xpos, ypos, 3);

@@ -75,7 +75,7 @@ public class Spike extends Polygon {
     public void draw(Graphics g) {
         g.setColor(Color.DARK_GRAY);
         Graphics2D g2d = (Graphics2D)g.create();
-        g2d.setColor(Color.GREEN);
+        g2d.setColor(Color.BLUE);
         g2d.fill(this);
     }
 }

@@ -1,4 +1,4 @@
-package entities;
+package main;
 
 import objects.*;
 import states.PlayState;
@@ -47,19 +47,27 @@ public class Player {
     private boolean stopJump = true;
     private boolean hasSecondJump = true;
 
+    // Audio
+    private AudioManager jump1 = new AudioManager("resources/audio/jump1.wav", -10);
+    private AudioManager jump2 = new AudioManager("resources/audio/jump2.wav", -10);
+
+    // Draw variables
+    private int facing = 1;
+    private int leftTick = 0;
+    private int rightTick = 0;
+    private int jumpTick = 0;
+    private int fallTick = 0;
+
     public Player(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
     public void tick(Block[][] b, Spike[][] s, SavePoint[][] sp, Goal g) {
-        int iX = (int)x;
-        int iY = (int)y;
-
-        int cRight = iX + width;
-        int cLeft = iX;
-        int cTop = iY;
-        int cBottom = iY + height;
+        double cRight = x + width;
+        double cLeft = x;
+        double cTop = y;
+        double cBottom = y + height;
 
         left = !stopLeft;
         right = !stopRight;
@@ -77,13 +85,13 @@ public class Player {
                         bottomCollision = true;
                         fallingFromBlock = false;
                     }
-                    if (Collision.playerBlock(cRight+1, cBottom-1, block) ||
-                            Collision.playerBlock(cRight+1, cTop+3, block)) {
+                    if (Collision.playerBlock(cRight+3, cBottom-1, block) ||
+                            Collision.playerBlock(cRight+3, cTop+3, block)) {
 //                        System.out.println("RIGHT");
                         right = false;
                     }
-                    if (Collision.playerBlock(cLeft-2, cBottom-1, block) ||
-                            Collision.playerBlock(cLeft-2, cTop+3, block)) {
+                    if (Collision.playerBlock(cLeft-3, cBottom-1, block) ||
+                            Collision.playerBlock(cLeft-3, cTop+3, block)) {
 //                        System.out.println("LEFT");
                         left = false;
                     }
@@ -118,7 +126,7 @@ public class Player {
                 }
             }
         }
-        if(Collision.playerGoal(iX, iY, g)) {
+        if(Collision.playerGoal(x, y, g)) {
             PlayState.progress();
         }
 
@@ -142,7 +150,8 @@ public class Player {
             //currentJumpSpeed -= 0.1;
 
             if(jumpDelta >= maxJumpDelta || stopJump) {
-                currentJumpSpeed = jumpSpeed;
+                //currentJumpSpeed = jumpSpeed;
+                currentJumpSpeed += (currentJumpSpeed > .2) ? 0.05 : 0.005;
                 jumping = false;
                 falling = true;
             }
@@ -157,7 +166,9 @@ public class Player {
             if(currentFallSpeed < maxFallSpeed) {
                 // This is good enough :D
                 if(fallingFromBlock) currentFallSpeed += .15;
-                else currentFallSpeed += (currentFallSpeed > .25) ? .15 : (currentFallSpeed > .2) ? 0.05 : .05;
+                else currentFallSpeed +=
+                        (currentFallSpeed > .25) ? .15 :
+                        (currentFallSpeed > .2) ? 0.05 : 0.005;
             }
         }
         else {
@@ -167,9 +178,50 @@ public class Player {
 
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
+        int drawX = (int)x - ((facing-1) * width);
+        int drawY = (int)y;
+        int drawWidth = width * ((facing * 2) + -1);
+        String pathname = "resources/imgs/";
+        if(left) {
+            facing = 0;
+            if(!jumping && !falling) {
+                leftTick += 1;
+                if(leftTick == 21) leftTick = 0;
+                if(leftTick <= 10) pathname += "walk1.png";
+                else pathname += "walk2.png";
+            }
+            rightTick = 0;
+        }
+        else if(right) {
+            facing = 1;
+            if(!jumping && !falling) {
+                rightTick += 1;
+                if(rightTick == 21) rightTick = 0;
+                if(rightTick <= 10) pathname += "walk1.png";
+                else pathname += "walk2.png";
+            }
+            leftTick = 0;
+        }
+        if(jumping) {
+            jumpTick += 1;
+            if(jumpTick == 9) jumpTick = 0;
+            if(jumpTick <= 4) pathname += "jump1.png";
+            else pathname += "jump2.png";
+        }
+        else if (falling) {
+            jumpTick = 0;
+            fallTick += 1;
+            if(fallTick == 11) fallTick = 0;
+            if(fallTick <= 5) pathname += "fall1.png";
+            else pathname += "fall2.png";
+        }
+        else fallTick = 0;
+        if(pathname.charAt(pathname.length()-1) == '/') {
+            pathname += "idle.png";
+        }
         try {
-            Image img = ImageIO.read(new File("resources/imgs/img.png"));
-            g.drawImage(img, (int)x, (int)y, null);
+            Image img = ImageIO.read(new File(pathname));
+            g.drawImage(img, drawX, drawY, drawWidth, height, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,11 +235,13 @@ public class Player {
         if(KEY_RIGHT.contains(k)) {
             stopRight = false;
         }
-        if(KEY_JUMP.contains(k) && !jumping && hasSecondJump) {
+        if(KEY_JUMP.contains(k) && !jumping && hasSecondJump && stopJump) {
             if(falling) {
                 jumpDelta = 0.1;
                 hasSecondJump = false;
+                jump2.start(false, true);
             }
+            else jump1.start(false, true);
             jumping = true;
             falling = false;
             stopJump = false;

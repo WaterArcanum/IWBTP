@@ -1,12 +1,11 @@
 package states;
 
-import entities.Player;
+import main.Player;
 import main.AudioManager;
 import objects.Map;
 import objects.SavePoint;
 
 import java.awt.*;
-import java.util.Arrays;
 
 import static main.Game.*;
 
@@ -17,17 +16,20 @@ public class PlayState extends GameState {
     private static final AudioManager[] bgm = {
             new AudioManager("resources/audio/stage1.wav"),
             new AudioManager("resources/audio/stage2.wav"),
-            new AudioManager("resources/audio/stage3.wav")
+            new AudioManager("resources/audio/stage3.wav"),
+            new AudioManager("resources/audio/tutorial.wav")
     };
     private static final AudioManager deathSound = new AudioManager("resources/audio/death.wav");
-    private static int level;
+    private static int level = 0;
     private static int savePointId;
 
-    public PlayState(GameStateManager gsm, int level) {
+    public PlayState(GameStateManager gsm) {
         super(gsm);
     }
 
     protected void init() {
+        if(MenuState.tutorial) level = 3;
+        else if(level == 3) level = 0;
         String path = "resources/maps/map" + (level + 1) + ".map";
         map = new Map(path);
         double x = 30;
@@ -55,7 +57,7 @@ public class PlayState extends GameState {
     public static void restart() {
         //bgm.stop(true);
         deathSound.stop(false);
-        GameStateManager.states.push(new PlayState(gsm, level));
+        GameStateManager.states.push(new PlayState(gsm));
     }
 
     public static void die() {
@@ -68,7 +70,7 @@ public class PlayState extends GameState {
         savePointId = sp.getId();
     }
 
-    public void exit() {
+    public static void exit() {
         bgm[level].stop(false);
         GameStateManager.states.push(new MenuState(gsm));
     }

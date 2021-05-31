@@ -7,17 +7,19 @@ import static main.Game.*;
 import java.awt.*;
 
 public class MenuState extends GameState {
-    private final String[] options = {"Start", "Credits", "Exit"};
+    private final String[] options = {"Start", "Tutorial", "Exit"};
     private int current = 0;
     private long start;
     private boolean played = false;
     private AudioManager bgm;
+    public static boolean tutorial;
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
     }
 
     protected void init() {
+        tutorial = false;
         start = System.currentTimeMillis();
     }
     protected void tick() {
@@ -41,7 +43,7 @@ public class MenuState extends GameState {
             else g.setColor(Color.WHITE);
 
             g.setFont(new Font("Exo", Font.BOLD, 72));
-            g.drawString(options[i], GamePanel.WIDTH / 2 - 50, 100 + i * 150);
+            g.drawString(options[i], GamePanel.WIDTH / 8, GamePanel.HEIGHT / options.length - 20 + i * 150);
         }
     }
 
@@ -60,16 +62,14 @@ public class MenuState extends GameState {
         }
 
         if(KEY_ENTER.contains(k)) {
+            bgm.stop(false);
             switch (current) {
-                case 0:
-                    bgm.stop(false);
-                    GameStateManager.states.push(new PlayState(gsm, 0));
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    System.exit(0);
-                    break;
+                case 0 -> GameStateManager.states.push(new PlayState(gsm));
+                case 1 -> {
+                    tutorial = true;
+                    GameStateManager.states.push(new PlayState(gsm));
+                }
+                case 2 -> System.exit(0);
             }
         }
     }

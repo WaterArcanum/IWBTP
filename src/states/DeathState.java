@@ -1,6 +1,6 @@
 package states;
 
-import entities.Player;
+import main.Player;
 import main.GamePanel;
 import objects.Map;
 import static main.Game.*;
@@ -43,6 +43,7 @@ public class DeathState extends GameState {
 
     protected void keyPressed(int k) {
         if(KEY_RESET.contains(k)) PlayState.restart();
+        if(KEY_EXIT.contains(k)) PlayState.exit();
     }
 
     protected void keyReleased(int k) {

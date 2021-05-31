@@ -15,8 +15,8 @@ public class Game {
     public static ArrayList<Integer> KEY_ENTER = new ArrayList<>(Arrays.asList(KeyEvent.VK_ENTER, KeyEvent.VK_SPACE));
     public static ArrayList<Integer> KEY_JUMP =
             new ArrayList<>(Arrays.asList(KeyEvent.VK_SHIFT, KeyEvent.VK_SPACE, KeyEvent.VK_UP, KeyEvent.VK_W));
-    public static ArrayList<Integer> KEY_RESET = new ArrayList<>(Arrays.asList(KeyEvent.VK_R));
-    public static ArrayList<Integer> KEY_EXIT = new ArrayList<>(Arrays.asList(KeyEvent.VK_ESCAPE));
+    public static ArrayList<Integer> KEY_RESET = new ArrayList<>(Arrays.asList(KeyEvent.VK_R, KeyEvent.VK_BACK_SLASH));
+    public static ArrayList<Integer> KEY_EXIT = new ArrayList<>(Arrays.asList(KeyEvent.VK_ESCAPE, KeyEvent.VK_BACK_SPACE));
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("IWBTProject");
