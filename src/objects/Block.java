@@ -1,5 +1,8 @@
 package objects;
 
+import main.GamePanel;
+import states.PlayState;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
@@ -28,8 +31,26 @@ public class Block extends Rectangle {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(this.x, this.y, width, height);
-        g.drawImage(img, this.x, this.y, null);
+        switch(PlayState.getLevel()) {
+            case 0 -> {
+                g.setColor(new Color(255, 81, 0));
+                g.drawRect(x, y, width, height);
+            }
+            case 1 -> {
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(this.x, this.y, width, height);
+                g.drawImage(img, this.x, this.y, null);
+            }
+            case 2 -> {
+                g.setColor(new Color(255, 96, 96, 100));
+                g.drawRect(this.x, this.y, width, height);
+                g.setColor(new Color(144, 88, 88, 50));
+                g.fillRect(this.x, this.y, width, height);
+            }
+            case 3 -> {
+                g.setColor(Color.WHITE);
+                g.fillRect(this.x, this.y, width, height);
+            }
+        }
     }
 }

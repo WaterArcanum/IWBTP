@@ -35,6 +35,7 @@ public class Player {
     private boolean right = false;
     private boolean jumping = false;
     private boolean falling = true;
+    private boolean dead = false;
     private boolean fallingFromBlock = false;
     private boolean bottomCollision = false;
     private boolean topCollision = false;
@@ -48,8 +49,8 @@ public class Player {
     private boolean hasSecondJump = true;
 
     // Audio
-    private AudioManager jump1 = new AudioManager("resources/audio/jump1.wav", -10);
-    private AudioManager jump2 = new AudioManager("resources/audio/jump2.wav", -10);
+    private final AudioManager jump1 = new AudioManager("resources/audio/jump1.wav", -10);
+    private final AudioManager jump2 = new AudioManager("resources/audio/jump2.wav", -10);
 
     // Draw variables
     private int facing = 1;
@@ -112,6 +113,7 @@ public class Player {
             for (int j = 0; j < s.length; j++) {
                 if(spikes[j] != null) {
                     if(Collision.playerSpike(x, y, width, height, spikes[j])) {
+                        dead = true;
                         PlayState.die();
                     }
                 }
@@ -182,50 +184,56 @@ public class Player {
         int drawY = (int)y;
         int drawWidth = width * ((facing * 2) + -1);
         String pathname = "resources/imgs/";
-        if(left) {
-            facing = 0;
-            if(!jumping && !falling) {
-                leftTick += 1;
-                if(leftTick == 21) leftTick = 0;
-                if(leftTick <= 10) pathname += "walk1.png";
-                else pathname += "walk2.png";
+        if(!dead) {
+            if (left) {
+                facing = 0;
+                if (!jumping && !falling) {
+                    leftTick += 1;
+                    if (leftTick == 21) leftTick = 0;
+                    if (leftTick <= 10) pathname += "walk1.png";
+                    else pathname += "walk2.png";
+                }
+                rightTick = 0;
+            } else if (right) {
+                facing = 1;
+                if (!jumping && !falling) {
+                    rightTick += 1;
+                    if (rightTick == 21) rightTick = 0;
+                    if (rightTick <= 10) pathname += "walk1.png";
+                    else pathname += "walk2.png";
+                }
+                leftTick = 0;
             }
-            rightTick = 0;
-        }
-        else if(right) {
-            facing = 1;
-            if(!jumping && !falling) {
-                rightTick += 1;
-                if(rightTick == 21) rightTick = 0;
-                if(rightTick <= 10) pathname += "walk1.png";
-                else pathname += "walk2.png";
+            if (jumping) {
+                jumpTick += 1;
+                if (jumpTick == 9) jumpTick = 0;
+                if (jumpTick <= 4) pathname += "jump1.png";
+                else pathname += "jump2.png";
+            } else if (falling) {
+                jumpTick = 0;
+                fallTick += 1;
+                if (fallTick == 11) fallTick = 0;
+                if (fallTick <= 5) pathname += "fall1.png";
+                else pathname += "fall2.png";
+            } else fallTick = 0;
+            if (pathname.charAt(pathname.length() - 1) == '/') {
+                pathname += "idle.png";
             }
-            leftTick = 0;
         }
-        if(jumping) {
-            jumpTick += 1;
-            if(jumpTick == 9) jumpTick = 0;
-            if(jumpTick <= 4) pathname += "jump1.png";
-            else pathname += "jump2.png";
-        }
-        else if (falling) {
-            jumpTick = 0;
-            fallTick += 1;
-            if(fallTick == 11) fallTick = 0;
-            if(fallTick <= 5) pathname += "fall1.png";
-            else pathname += "fall2.png";
-        }
-        else fallTick = 0;
-        if(pathname.charAt(pathname.length()-1) == '/') {
-            pathname += "idle.png";
+        else {
+            pathname += "dead.png";
         }
         try {
             Image img = ImageIO.read(new File(pathname));
             g.drawImage(img, drawX, drawY, drawWidth, height, null);
+            if(PlayState.getLevel() == 3 && PlayState.getTime() < 15000) {
+                img = ImageIO.read(new File("resources/imgs/arrows.png"));
+                g.drawImage(img, (int)x-55, (int)y-60, null);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //g.fillRect((int)x, (int)y, width, height);
+//        g.fillRect((int)x, (int)y, width, height);
     }
 
     public void keyPressed(int k) {

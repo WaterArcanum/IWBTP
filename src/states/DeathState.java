@@ -3,9 +3,14 @@ package states;
 import main.Player;
 import main.GamePanel;
 import objects.Map;
+
+import javax.imageio.ImageIO;
+
 import static main.Game.*;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class DeathState extends GameState {
     private final Map map;
@@ -31,13 +36,18 @@ public class DeathState extends GameState {
         map.draw(g);
         player.draw(g);
         long timeElapsed = finish - start;
+        int width = GamePanel.WIDTH;
+        int height = GamePanel.HEIGHT;
         if(timeElapsed > 500) {
             g.setColor(new Color(76, 76, 76, 150));
             g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
-            g.setFont(new Font("Exo", Font.BOLD, 18));
-            g.setColor(Color.BLACK);
-            g.drawString("Very temporary game over screen this is not final please stop asking about it",
-                    GamePanel.WIDTH *0, GamePanel.HEIGHT / 2);
+            try {
+                String pathname = "resources/imgs/gameover.png";
+                Image img = ImageIO.read(new File(pathname));
+                g.drawImage(img, 10, height / 2 - 137 / 2, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

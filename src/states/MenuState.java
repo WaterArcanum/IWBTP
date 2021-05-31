@@ -2,14 +2,19 @@ package states;
 
 import main.AudioManager;
 import main.GamePanel;
+
+import javax.imageio.ImageIO;
+
 import static main.Game.*;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class MenuState extends GameState {
     private final String[] options = {"Start", "Tutorial", "Exit"};
     private int current = 0;
-    private long start;
+    public static long start;
     private boolean played = false;
     private AudioManager bgm;
     public static boolean tutorial;
@@ -35,15 +40,28 @@ public class MenuState extends GameState {
     protected void draw(Graphics g) {
         int width = GamePanel.WIDTH;
         int height = GamePanel.HEIGHT;
-        g.setColor(new Color(7, 2, 82));
+
+        long finish = System.currentTimeMillis();
+        long timeElapsed = finish - start;
+        float textPercent = WinState.percent(0, 5000, timeElapsed)/100;
+        float bgPercent = WinState.percent(0, 10000, timeElapsed)/100;
+
+        g.setColor(new Color((int)(bgPercent * 9), (int)(bgPercent * 5), (int)(bgPercent * 95)));
         g.fillRect(0, 0, width, height);
 
         for (int i = 0; i < options.length; i++) {
-            if(i == current) g.setColor(Color.GREEN);
-            else g.setColor(Color.WHITE);
+            if(i == current) g.setColor(new Color(150, 150, 255, (int)(textPercent * 254)));
+            else g.setColor(new Color(255, 255, 255, (int)(textPercent * 255)));
 
             g.setFont(new Font("Exo", Font.BOLD, 72));
-            g.drawString(options[i], GamePanel.WIDTH / 8, GamePanel.HEIGHT / options.length - 20 + i * 150);
+            g.drawString(options[i], width / 3, height / options.length + 20 + i * 150);
+        }
+
+        try {
+            Image img = ImageIO.read(new File("resources/imgs/title.png"));
+            g.drawImage(img, -600, 0,null);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -64,7 +82,10 @@ public class MenuState extends GameState {
         if(KEY_ENTER.contains(k)) {
             bgm.stop(false);
             switch (current) {
-                case 0 -> GameStateManager.states.push(new PlayState(gsm));
+                case 0 -> {
+                    start = System.currentTimeMillis();
+                    GameStateManager.states.push(new PlayState(gsm));
+                }
                 case 1 -> {
                     tutorial = true;
                     GameStateManager.states.push(new PlayState(gsm));

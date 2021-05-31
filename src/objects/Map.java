@@ -1,5 +1,8 @@
 package objects;
 
+import main.GamePanel;
+import states.PlayState;
+
 import java.awt.*;
 import java.io.*;
 
@@ -30,17 +33,62 @@ public class Map {
     }
 
     public void draw(Graphics g) {
-        for (Block[] block : blocks) {
-            for (int i = 0; i < blocks[0].length; i++) {
-                if (block[i] != null) {
-                    block[i].draw(g);
-                }
+        switch(PlayState.getLevel()) {
+            case 0 -> {
+                g.setColor(new Color(3, 0, 87));
+                g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+            }
+            case 1 -> {
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+            }
+            case 2 -> {
+                g.setColor(new Color(21, 2, 2));
+                g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+            }
+            case 3 -> {
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Exo", Font.BOLD, 15));
+                g.drawString("Welcome to I Wanna Be The Project, an IWBTG / Delicious Fruit",
+                        50, 500);
+                g.drawString("fangame, created for a school assignment.",
+                        50, 530);
+                g.drawString("Use arrow keys / WAD / a bunch of other combinations to move around.",
+                        180, 600);
+                g.drawString("Avoid spikes and jump on platforms to get to the ending sphere.",
+                        180, 630);
+                g.drawString("You may press 'R' to reset and 'Esc' to exit the level.",
+                        180, 660);
+                g.drawString("Avoid these", 38, 380);
+                g.drawString("Jump on these", 423, 405);
+                g.drawString("Use your double jump", 523, 250);
+                g.drawString("Save your progress here", 470, 100);
+                g.drawString("Reach the goal", 38, 120);
+            }
+            case 4 -> {
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Exo", Font.BOLD, 28));
+                g.drawString("Haha, you thought you won.",
+                        175, 500);
+                g.drawString("But there is no escape. You may not win this game.", 25, 560);
             }
         }
+
         for (Spike[] spike : spikes) {
             for (int i = 0; i < spikes[0].length; i++) {
                 if (spike[i] != null) {
                     spike[i].draw(g);
+                }
+            }
+        }
+        for (Block[] block : blocks) {
+            for (int i = 0; i < blocks[0].length; i++) {
+                if (block[i] != null) {
+                    block[i].draw(g);
                 }
             }
         }

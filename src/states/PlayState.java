@@ -1,5 +1,6 @@
 package states;
 
+import main.GamePanel;
 import main.Player;
 import main.AudioManager;
 import objects.Map;
@@ -17,28 +18,29 @@ public class PlayState extends GameState {
             new AudioManager("resources/audio/stage1.wav"),
             new AudioManager("resources/audio/stage2.wav"),
             new AudioManager("resources/audio/stage3.wav"),
-            new AudioManager("resources/audio/tutorial.wav")
+            new AudioManager("resources/audio/tutorial.wav"),
+            new AudioManager("resources/audio/goodbye.wav")
     };
     private static final AudioManager deathSound = new AudioManager("resources/audio/death.wav", -10);
     private static final AudioManager winSound = new AudioManager("resources/audio/win.wav", -10);
-    private static int level;
+    private static int level=4;
     private static int deaths;
     private static long start;
     private static long finish;
-    private static int savePointId;
+    public static int savePointId;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
     }
 
     protected void init() {
-        start = System.currentTimeMillis();
+        start = MenuState.start;
         if(MenuState.tutorial) level = 3;
         else if(level == 3) level = 0;
         String path = "resources/maps/map" + (level + 1) + ".map";
         map = new Map(path);
-        double x = 30;
-        double y = 30;
+        double x = level <= 3 ? 30 : 360;
+        double y = x;
         for (SavePoint[] savePoints : map.getSavePoints()) {
             for (SavePoint point : savePoints) {
                 if(point != null) {
@@ -54,16 +56,21 @@ public class PlayState extends GameState {
     }
 
     public static void progress() {
+        start = System.currentTimeMillis();
+        savePointId = 0;
         bgm[level].stop(false);
         level += 1;
         deaths = 0;
+        if(level == 3) level = 4;
         PlayState.restart();
     }
 
     public static void win() {
+        savePointId = 0;
         bgm[level].stop(true);
         winSound.start(false, true);
-        GameStateManager.states.push(new WinState(gsm, map, player));
+        if(level == 3) GameStateManager.states.push(new MenuState(gsm));
+        else GameStateManager.states.push(new WinState(gsm, map));
     }
 
     public static void restart() {

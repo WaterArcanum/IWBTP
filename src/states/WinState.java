@@ -6,16 +6,16 @@ import objects.Map;
 
 import java.awt.*;
 
+import java.lang.Math;
+
 public class WinState extends GameState {
     private final Map map;
-    private final Player player;
     private long start;
     private long finish;
 
-    public WinState(GameStateManager gsm, Map map, Player player) {
+    public WinState(GameStateManager gsm, Map map) {
         super(gsm);
         this.map = map;
-        this.player = player;
     }
 
     protected void init() {
@@ -26,11 +26,23 @@ public class WinState extends GameState {
         finish = System.currentTimeMillis();
     }
 
+    public static float percent(float min, float max, float val) {
+        float result = ((val-min)/(max-min))*100;
+        return result <= 100 ? result : 100;
+    }
+
+    private static void colorLerp(Graphics g, int min, int max, long val, int color, int opacity,
+                                  int colorStart, int opacityStart) {
+        float percent = percent(min, max, val) / 100;
+        float colorPercent = colorStart - ((colorStart-color) * percent);
+        float opacityPercent = opacityStart - ((opacityStart-opacity) * percent);
+        g.setColor(new Color((int)colorPercent, (int)colorPercent, (int)colorPercent, (int)opacityPercent));
+    }
+
     protected void draw(Graphics g) {
         int width = GamePanel.WIDTH;
         int height = GamePanel.HEIGHT;
         map.draw(g);
-        player.draw(g);
         int transition1 = 1187;
         int transition2 = 2684;
         int bgColor = 76;
@@ -44,35 +56,35 @@ public class WinState extends GameState {
             g.fillRect(0, 0, width, height);
         }
         else if (timeElapsed < transition2) {
-            float percent = ((timeElapsed - transition1) / (float)transition2) * 2;
-            float colorPercent = 255 - ((255-bgColor) * percent);
-            float opacityPercent = 255 - ((255-bgOpacity) * percent);
-            if(colorPercent < bgColor) colorPercent = bgColor;
-            if(opacityPercent < bgOpacity) opacityPercent = bgOpacity;
-            System.out.println(colorPercent);
-            g.setColor(new Color((int)colorPercent, (int)colorPercent, (int)colorPercent, (int)opacityPercent));
+            colorLerp(g, transition1, transition2, timeElapsed, bgColor, bgOpacity, 255, 255);
             g.fillRect(0, 0, width, height);
         }
         if(timeElapsed > transition2) {
             g.setColor(new Color(bgColor, bgColor, bgColor, bgOpacity));
             g.fillRect(0, 0, width, height);
             g.setFont(new Font("Exo", Font.BOLD, 18));
-            g.setColor(Color.BLACK);
+            g.setColor(Color.WHITE);
         }
-        if(timeElapsed > 3383) {
+        if(timeElapsed > 3363) {
             g.drawString("Stage " + (PlayState.getLevel()+1) + " clear!", textXDefault, textYDefault);
         }
-        if(timeElapsed > 3858) {
-            g.drawString(PlayState.getDeaths() + " deaths", textXDefault, textYDefault + textYOffset);
+        if(timeElapsed > 3838) {
+            int deaths = PlayState.getDeaths();
+            g.drawString(deaths + " death" + (deaths != 1 ? "s" : ""), textXDefault, textYDefault + textYOffset);
         }
-        if(timeElapsed > 4332) {
-            g.drawString(PlayState.getTime() + " seconds", textXDefault, textYDefault + textYOffset * 2);
+        if(timeElapsed > 4312) {
+            double time = PlayState.getTime() / 1000f;
+            g.drawString(time + " seconds", textXDefault, textYDefault + textYOffset * 2);
         }
-        if(timeElapsed > 4823) {
+        if(timeElapsed > 4803) {
             g.drawString("Press any key to continue.", textXDefault, textYDefault + textYOffset * 3);
         }
         if(timeElapsed > 5157 && timeElapsed < 8000) {
-            g.setColor(new Color(bgColor, bgColor, bgColor, bgOpacity-50));
+            colorLerp(g, 5157, 8000, timeElapsed, bgColor-50, bgOpacity-50, bgColor, bgOpacity);
+            g.fillRect(0, 0, width, height);
+        }
+        if(timeElapsed > 8000) {
+            g.setColor(new Color(bgColor-50, bgColor-50, bgColor-50, bgOpacity-50));
             g.fillRect(0, 0, width, height);
         }
     }

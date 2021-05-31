@@ -1,6 +1,11 @@
 package objects;
 
+import states.PlayState;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class SavePoint extends Rectangle {
     public static int blockSize = Block.blockSize;
@@ -12,11 +17,20 @@ public class SavePoint extends Rectangle {
     private final int width = blockSize;
     private final int height = blockSize;
 
+    private Image imgOff;
+    private Image imgOn;
+
     public SavePoint(int x, int y, int id) {
         this.x = x;
         this.y = y;
         this.id = id;
         setBounds(x, y, width, height);
+        try {
+            imgOff = ImageIO.read(new File("resources/imgs/save.png"));
+            imgOn = ImageIO.read(new File("resources/imgs/saved.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
@@ -32,7 +46,7 @@ public class SavePoint extends Rectangle {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.YELLOW);
-        g.fillRect(this.x, this.y, width, height);
+        if(id == PlayState.savePointId) g.drawImage(imgOn, x, y, null);
+        else g.drawImage(imgOff, x, y, null);
     }
 }
