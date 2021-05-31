@@ -127,7 +127,7 @@ public class Player {
             }
         }
         if(Collision.playerGoal(x, y, g)) {
-            PlayState.progress();
+            PlayState.win();
         }
 
         bottomCollision = false;
