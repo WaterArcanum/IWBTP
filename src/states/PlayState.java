@@ -70,9 +70,11 @@ public class PlayState extends GameState {
     public static void win() {
         savePointId = 0;
         bgm[level].stop(true);
-        winSound.start(false, true);
         if(level == 3) GameStateManager.states.push(new MenuState(gsm));
-        else GameStateManager.states.push(new WinState(gsm, map));
+        else {
+            winSound.start(false, true);
+            GameStateManager.states.push(new WinState(gsm, map));
+        }
     }
 
     // Restart the level
