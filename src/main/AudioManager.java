@@ -1,7 +1,8 @@
 package main;
 
 import javax.sound.sampled.*;
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class AudioManager {
@@ -17,7 +18,8 @@ public class AudioManager {
 
     public void init(String filename, int gain) {
         try {
-            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(filename));
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(filename));
+            AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
             clip = AudioSystem.getClip();
             clip.open(ais);
             FloatControl fc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);

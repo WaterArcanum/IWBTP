@@ -2,9 +2,11 @@ package objects;
 
 import main.GamePanel;
 import states.PlayState;
+import states.WinState;
 
 import java.awt.*;
 import java.io.*;
+import java.util.Random;
 
 public class Map {
     private final String path;
@@ -14,15 +16,26 @@ public class Map {
     private final Block[][] blocks;
     private final Spike[][] spikes;
     private final SavePoint[][] savePoints;
+    private final BackgroundRect[] deco0;
+    private final BackgroundRect[] deco1;
     private Goal goal;
 
+    private double tick;
+    private boolean tickUp = true;
+    private boolean bTickUp;
+
     public Map(String path) {
+        Random rand = new Random();
+        tick = rand.nextInt(75) + 25;
+
         this.path = path;
         width = 24;
         height = 24;
         blocks = new Block[height][width];
         spikes = new Spike[height][width];
         savePoints = new SavePoint[height][width];
+        deco1 = new BackgroundRect[10];
+        deco0 = new BackgroundRect[10];
 
         /*for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks[0].length; j++) {
@@ -36,15 +49,30 @@ public class Map {
     public void draw(Graphics g) {
         switch(PlayState.getLevel()) {
             case 0 -> {
-                g.setColor(new Color(3, 0, 87));
+                g.setColor(new Color(0, 36, 90));
                 g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+                for(BackgroundRect br : deco0) {
+                    br.move();
+                    br.draw(g);
+                }
             }
             case 1 -> {
-                g.setColor(Color.DARK_GRAY);
+                if(tickUp) tick+=0.5;
+                else tick-=0.5;
+                if(tick >= 100) tickUp = false;
+                if(tick <= 25) tickUp = true;
+                float percent = WinState.percent(0, 100, (float)tick);
+                float color = 50 * (percent/100);
+                g.setColor(new Color(0, (int)color, (int)color));
+//                g.setColor(new Color(0, 36, 90));
                 g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+                for(BackgroundRect br : deco1) {
+                    br.fade();
+                    br.draw(g);
+                }
             }
             case 2 -> {
-                g.setColor(new Color(21, 2, 2));
+                g.setColor(new Color(0,0,0));
                 g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
             }
             case 3 -> {
@@ -52,11 +80,11 @@ public class Map {
                 g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
                 g.setColor(Color.WHITE);
                 g.setFont(new Font("Exo", Font.BOLD, 15));
-                g.drawString("Welcome to I Wanna Be The Project, an IWBTG / Delicious Fruit",
+                g.drawString("Welcome to IWBTP, an I Wanna Be The Guy / Delicious Fruit",
                         50, 500);
                 g.drawString("fangame, created for a school assignment.",
                         50, 530);
-                g.drawString("Use arrow keys / WAD / a bunch of other combinations to move around.",
+                g.drawString("Use arrow keys / WAD / WAL / Space / Shift to move and jump around.",
                         180, 600);
                 g.drawString("Avoid spikes and jump on platforms to get to the ending sphere.",
                         180, 630);
@@ -86,6 +114,13 @@ public class Map {
                 }
             }
         }
+
+        int tickStat = Block.tickStat;
+        if (bTickUp) tickStat += 1;
+        else tickStat -= 1;
+        Block.tickStat = tickStat;
+        if (tickStat >= 100) bTickUp = false;
+        if (tickStat <= 75) bTickUp = true;
         for (Block[] block : blocks) {
             for (int i = 0; i < blocks[0].length; i++) {
                 if (block[i] != null) {
@@ -93,6 +128,7 @@ public class Map {
                 }
             }
         }
+
         for (SavePoint[] savePoint : savePoints) {
             for (int i = 0; i < savePoints[0].length; i++) {
                 if (savePoint[i] != null) {
@@ -143,6 +179,17 @@ public class Map {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        if(PlayState.getLevel() == 0) {
+            for (int i = 0; i < 10; i++) {
+                deco0[i] = new BackgroundRect(true);
+            }
+        }
+        if(PlayState.getLevel() == 1) {
+            for (int i = 0; i < 10; i++) {
+                deco1[i] = new BackgroundRect(false);
+            }
         }
     }
 

@@ -84,6 +84,7 @@ public class MenuState extends GameState {
             switch (current) {
                 case 0 -> {
                     start = System.currentTimeMillis();
+                    PlayState.savePointId = 0;
                     GameStateManager.states.push(new PlayState(gsm));
                 }
                 case 1 -> {

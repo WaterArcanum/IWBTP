@@ -46,7 +46,14 @@ public class SavePoint extends Rectangle {
     }
 
     public void draw(Graphics g) {
-        if(id == PlayState.savePointId) g.drawImage(imgOn, x, y, null);
-        else g.drawImage(imgOff, x, y, null);
+        Graphics2D g2d = (Graphics2D)g.create();
+        float alpha = 1f;
+        switch(PlayState.getLevel()) {
+            case 0 -> alpha = 0.7f;
+            case 2 -> alpha = 0.5f;
+        }
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        if(id == PlayState.savePointId) g2d.drawImage(imgOn, x, y, null);
+        else g2d.drawImage(imgOff, x, y, null);
     }
 }

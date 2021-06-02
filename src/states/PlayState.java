@@ -98,6 +98,7 @@ public class PlayState extends GameState {
 
     // Exit to menu
     public static void exit() {
+        if(level == 3) savePointId = 0;
         bgm[level].stop(false);
         deathSound.stop(false);
         winSound.stop(false);

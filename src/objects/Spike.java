@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class Spike extends Polygon {
     public static int blockSize = Block.blockSize;
@@ -21,7 +22,8 @@ public class Spike extends Polygon {
     public Spike(int x, int y, int rotation) {
         this.x = x;
         this.y = y;
-        tick = 50;
+        Random rand = new Random();
+        tick = rand.nextInt(75) + 25;
 
         x += blockSize;
         y += blockSize;
@@ -81,33 +83,44 @@ public class Spike extends Polygon {
                 if(tick >= 100) tickUp = false;
                 if(tick <= 50) tickUp = true;
                 float percent = WinState.percent(0, 100, tick);
-                float color = 180 * (percent/100);
+                float color = 190 * (percent/100);
                 g2d.setColor(new Color((int)color, 0, (int)color));
                 g2d.draw(this);
             }
             case 1 -> {
-                if(tickUp) tick++;
-                else tick--;
-                if(tick >= 100) tickUp = false;
-                if(tick <= 50) tickUp = true;
-                float percent = WinState.percent(0, 100, tick);
-                float color = 153 * (percent/100);
-                g2d.setColor(new Color((int)color, (int)color, (int)color, (int)color));
+//                if(tickUp) tick++;
+//                else tick--;
+//                if(tick >= 100) tickUp = false;
+//                if(tick <= 50) tickUp = true;
+//
+//                float percent = WinState.percent(0, 100, tick);
+//                float color = 153 * (percent/100);
+//                g2d.setColor(new Color((int)color, (int)color, (int)color, (int)color));
+//                g2d.draw(this);
+                int tickStat = Block.tickStat;
+                float percent = WinState.percent(0, 100, tickStat);
+                int color = (int) (190 * (percent/100));
+                g2d.setColor(new Color(0, Math.max(color-50, 0), color));
                 g2d.draw(this);
             }
             case 2 -> {
-                g2d.setColor(new Color(255, 0, 0, 100));
-                g2d.draw(this);
-                g2d.setColor(new Color(168, 0, 0, 50));
-                g2d.fill(this);
+//                g2d.setColor(new Color(255, 0, 0, 100));
+//                g2d.draw(this);
+//                g2d.setColor(new Color(168, 0, 0, 50));
+//                g2d.fill(this);
 
-                if(tickUp) tick++;
-                else tick--;
+                Random rand = new Random();
+                if(tickUp) {
+                    if(rand.nextInt(5) > 1) tick+=2;
+                }
+                else if(rand.nextInt(5) > 1) tick-=2;
                 if(tick >= 100) tickUp = false;
-                if(tick <= 50) tickUp = true;
+                if(tick <= 25) tickUp = true;
                 float percent = WinState.percent(0, 100, tick);
                 float color = 168 * (percent/100);
-                g2d.setColor(new Color((int)color, 0, 0, 50));
+                g2d.setColor(new Color((int)color, 0, 0, (int)color));
+//                g2d.setColor(new Color(168, 0, 0, 50));
+                g2d.draw(this);
                 g2d.fill(this);
             }
             case 3 -> {
