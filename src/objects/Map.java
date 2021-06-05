@@ -120,7 +120,7 @@ public class Map {
         else tickStat -= 1;
         Block.tickStat = tickStat;
         if (tickStat >= 100) bTickUp = false;
-        if (tickStat <= 75) bTickUp = true;
+        if (tickStat <= 65) bTickUp = true;
         for (Block[] block : blocks) {
             for (int i = 0; i < blocks[0].length; i++) {
                 if (block[i] != null) {

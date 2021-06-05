@@ -4,11 +4,13 @@ import java.awt.*;
 import java.util.Stack;
 
 public class GameStateManager {
+    public static int difficulty;
+
     public static Stack<GameState> states;
 
     public GameStateManager() {
         states = new Stack<>();
-        states.push(new MenuState(this));
+        states.push(new OptionsState(this));
     }
 
     public void tick() {

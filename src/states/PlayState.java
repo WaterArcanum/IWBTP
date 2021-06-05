@@ -20,9 +20,10 @@ public class PlayState extends GameState {
             new AudioManager("resources/audio/tutorial.wav"),
             new AudioManager("resources/audio/goodbye.wav")
     };
-    private static final AudioManager deathSound = new AudioManager("resources/audio/death.wav", -10);
-    private static final AudioManager winSound = new AudioManager("resources/audio/win.wav", -10);
-    private static int level;
+    private static AudioManager deathSound;
+    private static final AudioManager winSound =
+            new AudioManager("resources/audio/win.wav", -10);
+    private static int level=4;
     private static int deaths;
     private static long start;
     private static long finish;
@@ -36,7 +37,10 @@ public class PlayState extends GameState {
         start = MenuState.start;
         if(MenuState.tutorial) level = 3;
         else if(level == 3) level = 0;
-        String path = "resources/maps/map" + (level + 1) + ".map";
+        if(level == 4) deathSound = new AudioManager("resources/audio/death2.wav", -10);
+        else deathSound = new AudioManager("resources/audio/death.wav", -10);
+        String path = "resources/maps/e" + (GameStateManager.difficulty + 1) +
+                "/map" + (level + 1) + ".map";
         map = new Map(path);
         double x = level < 3 ? 30 : 360;
         double y = x;

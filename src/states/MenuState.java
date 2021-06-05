@@ -89,6 +89,7 @@ public class MenuState extends GameState {
                 }
                 case 1 -> {
                     tutorial = true;
+                    PlayState.savePointId = 0;
                     GameStateManager.states.push(new PlayState(gsm));
                 }
                 case 2 -> System.exit(0);
