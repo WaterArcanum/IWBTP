@@ -4,8 +4,6 @@ import java.awt.*;
 import java.util.Stack;
 
 public class GameStateManager {
-    public static int difficulty;
-
     public static Stack<GameState> states;
 
     public GameStateManager() {

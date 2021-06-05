@@ -2,6 +2,7 @@ package states;
 
 import main.Player;
 import main.AudioManager;
+import main.SaveManager;
 import objects.Map;
 import objects.SavePoint;
 
@@ -23,10 +24,11 @@ public class PlayState extends GameState {
     private static AudioManager deathSound;
     private static final AudioManager winSound =
             new AudioManager("resources/audio/win.wav", -10);
-    private static int level=4;
+    private static int level;
     private static int deaths;
     private static long start;
     private static long finish;
+    private static SaveManager save;
     public static int savePointId;
 
     public PlayState(GameStateManager gsm) {
@@ -36,10 +38,10 @@ public class PlayState extends GameState {
     protected void init() {
         start = MenuState.start;
         if(MenuState.tutorial) level = 3;
-        else if(level == 3) level = 0;
+        save = new SaveManager(SaveManager.getIndex());
         if(level == 4) deathSound = new AudioManager("resources/audio/death2.wav", -10);
         else deathSound = new AudioManager("resources/audio/death.wav", -10);
-        String path = "resources/maps/e" + (GameStateManager.difficulty + 1) +
+        String path = "resources/maps/e" + (save.getDiff() + 1) +
                 "/map" + (level + 1) + ".map";
         map = new Map(path);
         double x = level < 3 ? 30 : 360;
@@ -93,19 +95,21 @@ public class PlayState extends GameState {
         deaths++;
         bgm[level].stop(true);
         deathSound.start(false, true);
+        save.setDeaths(deaths);
         GameStateManager.states.push(new DeathState(gsm, map, player));
     }
 
     public static void save(SavePoint sp) {
         savePointId = sp.getId();
+        if(!MenuState.tutorial) save.setC_stage(savePointId);
     }
 
     // Exit to menu
     public static void exit() {
-        if(level == 3) savePointId = 0;
         bgm[level].stop(false);
         deathSound.stop(false);
         winSound.stop(false);
+        save.save();
         GameStateManager.states.push(new MenuState(gsm));
     }
 
@@ -119,6 +123,10 @@ public class PlayState extends GameState {
 
     public static int getLevel() {
         return level;
+    }
+
+    public static void setLevel(int level) {
+        PlayState.level = level;
     }
 
     protected void tick() {

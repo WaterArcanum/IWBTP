@@ -2,6 +2,7 @@ package states;
 
 import main.AudioManager;
 import main.GamePanel;
+import main.SaveManager;
 
 import javax.imageio.ImageIO;
 
@@ -18,6 +19,8 @@ public class MenuState extends GameState {
     private boolean played = false;
     private AudioManager bgm;
     public static boolean tutorial;
+    public static long timeElapsed;
+    private SaveManager save = new SaveManager(SaveManager.getIndex());
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
@@ -29,8 +32,8 @@ public class MenuState extends GameState {
     }
     protected void tick() {
         long finish = System.currentTimeMillis();
-        long timeElapsed = finish - start;
-        if(timeElapsed > 50 && !played) {
+        timeElapsed = finish - start;
+        if(timeElapsed > 0 && !played) {
             bgm = new AudioManager("resources/audio/menu.wav");
             bgm.start(true, true);
             played = true;
@@ -76,7 +79,9 @@ public class MenuState extends GameState {
         }
 
         if(KEY_EXIT.contains(k)) {
-            System.exit(0);
+            bgm.stop(false);
+            save.save();
+            GameStateManager.states.push(new OptionsState(gsm));
         }
 
         if(KEY_ENTER.contains(k)) {
@@ -84,7 +89,8 @@ public class MenuState extends GameState {
             switch (current) {
                 case 0 -> {
                     start = System.currentTimeMillis();
-                    PlayState.savePointId = 0;
+                    PlayState.savePointId = save.getC_stage();
+                    PlayState.setLevel(save.getStage());
                     GameStateManager.states.push(new PlayState(gsm));
                 }
                 case 1 -> {
@@ -92,7 +98,10 @@ public class MenuState extends GameState {
                     PlayState.savePointId = 0;
                     GameStateManager.states.push(new PlayState(gsm));
                 }
-                case 2 -> System.exit(0);
+                case 2 -> {
+                    save.save();
+                    System.exit(0);
+                }
             }
         }
     }
