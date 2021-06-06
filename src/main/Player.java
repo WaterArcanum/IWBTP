@@ -27,7 +27,7 @@ public class Player {
     private double jumpDelta = 0;
     private double currentJumpSpeed = jumpSpeed;
 
-    private final double maxFallSpeed = 3.5;
+    private final double maxFallSpeed = 4;
     private double currentFallSpeed = 0.1;
 
     // Movement
@@ -38,9 +38,6 @@ public class Player {
     private boolean dead = false;
     private boolean fallingFromBlock = false;
     private boolean bottomCollision = false;
-    private boolean topCollision = false;
-    private boolean leftCollision = false;
-    private boolean rightCollision = false;
 
     // Key-based movement
     private boolean stopLeft = true;
@@ -89,12 +86,12 @@ public class Player {
                     }
                     // Right collision
                     if (Collision.playerBlock(cRight+3, cBottom-1, block) ||
-                            Collision.playerBlock(cRight+3, cTop+3, block)) {
+                            Collision.playerBlock(cRight+3, cTop+5, block)) {
                         right = false;
                     }
                     // Left collision
                     if (Collision.playerBlock(cLeft-3, cBottom-1, block) ||
-                            Collision.playerBlock(cLeft-3, cTop+3, block)) {
+                            Collision.playerBlock(cLeft-3, cTop+5, block)) {
                         left = false;
                     }
                     // Top collision
@@ -117,7 +114,7 @@ public class Player {
                 if(spikes[j] != null) {
                     if(Collision.playerSpike(x, y, width, height, spikes[j])) {
                         dead = true;
-                        PlayState.die();
+                        PlayState.die(spikes[j].getId());
                     }
                 }
             }
@@ -138,12 +135,13 @@ public class Player {
         }
 
         bottomCollision = false;
-        topCollision = false;
-        leftCollision = false;
-        rightCollision = false;
 
         x -= left ? moveSpeed : 0;
         x += right ? moveSpeed : 0;
+
+//        System.out.println("jumpDelta: " + jumpDelta + " | maxJumpDelta: " + maxJumpDelta +
+//                " | jumpTick: " + jumpTick + " | jumpSpeed: " + jumpSpeed +
+//                " | currJumpSpeed: " + currentJumpSpeed);
 
         if(!stopJump && jumpDelta < maxJumpDelta) {
             jumpDelta += 0.1;
@@ -152,14 +150,16 @@ public class Player {
         if(jumping) {
             y -= currentJumpSpeed;
 
+            currentJumpSpeed -= 0.005;
+
             if(jumpDelta >= maxJumpDelta || stopJump) {
-                currentJumpSpeed += (currentJumpSpeed > .2) ? 0.05 : 0.005;
                 jumping = false;
                 falling = true;
             }
         }
         else {
             jumpDelta = 0;
+            currentJumpSpeed = jumpSpeed;
         }
 
         if(falling) {

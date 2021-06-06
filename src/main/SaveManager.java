@@ -16,6 +16,7 @@ public class SaveManager {
             "stage",
             "c_stage",
             "deaths",
+            "c_deaths",
             "time",
             "diff"
     };
@@ -25,6 +26,7 @@ public class SaveManager {
     private int stage;
     private int c_stage;
     private int deaths;
+    private int c_deaths;
     private int time;
     private int diff;
 
@@ -98,6 +100,7 @@ public class SaveManager {
             stage = Integer.parseInt(br.readLine().split("=")[1]);
             c_stage = Integer.parseInt(br.readLine().split("=")[1]);
             deaths = Integer.parseInt(br.readLine().split("=")[1]);
+            c_deaths = Integer.parseInt(br.readLine().split("=")[1]);
             time = Integer.parseInt(br.readLine().split("=")[1]);
             diff = Integer.parseInt(br.readLine().split("=")[1]);
         } catch (IOException e) {
@@ -111,6 +114,7 @@ public class SaveManager {
             values.put("stage", String.valueOf(getStage()));
             values.put("c_stage", String.valueOf(getC_stage()));
             values.put("deaths", String.valueOf(getDeaths()));
+            values.put("c_deaths", String.valueOf(getC_deaths()));
             values.put("time", String.valueOf(getTime() + MenuState.timeElapsed));
             values.put("diff", String.valueOf(getDiff()));
             for (String key : keys) {
@@ -144,6 +148,10 @@ public class SaveManager {
         return deaths;
     }
 
+    public int getC_deaths() {
+        return c_deaths;
+    }
+
     public int getTime() {
         return time;
     }
@@ -162,6 +170,10 @@ public class SaveManager {
 
     public void setDeaths(int deaths) {
         this.deaths = deaths;
+    }
+
+    public void setC_deaths(int c_deaths) {
+        this.c_deaths = c_deaths;
     }
 
     public void setTime(int time) {

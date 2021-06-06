@@ -5,6 +5,7 @@ import main.SaveManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 
@@ -26,7 +27,7 @@ public class OptionsState extends GameState {
 
     protected void init() {
         saves = new SaveManager[3];
-        imgs = new Image[3];
+        imgs = new Image[4];
         for (int i = 0; i < saves.length; i++) {
             saves[i] = new SaveManager(i);
             try {
@@ -34,6 +35,11 @@ public class OptionsState extends GameState {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        try {
+            imgs[3] = ImageIO.read(new File("resources/imgs/unknown.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -48,6 +54,11 @@ public class OptionsState extends GameState {
         g.fillRect(0, 0, width, height);
 
         if(!diffSelect) {
+            g.setColor(Color.WHITE);
+            Font f = new Font("Exo", Font.BOLD, 72);
+            Rectangle r = new Rectangle(0, 144, 720, 720);
+            centerTextX(g, "Pick a save file", r, f);
+            f = new Font("Exo", Font.BOLD, 24);
             for (int i = 0; i < 3; i++) {
                 int x = 25 + i * 230;
                 int y = 250;
@@ -56,51 +67,49 @@ public class OptionsState extends GameState {
                 SaveManager save = saves[i];
                 int stage = save.getStage();
                 int deaths = save.getDeaths();
-                int time = save.getTime();
                 int diff = save.getDiff();
 
-                if (i == current) {
-                    g.setColor(SELECTED_COLOR);
-                    g.fillRect(x, y, wh, wh);
-                } else g.setColor(Color.WHITE);
-                if (stage != -1) g.drawImage(imgs[stage], x, y, wh, wh, null);
+                if (i == current) g.setColor(SELECTED_COLOR);
+                else g.setColor(Color.WHITE);
+                if (stage != -1 && stage <= 2) g.drawImage(imgs[stage], x, y, wh, wh, null);
+                else g.drawImage(imgs[3], x, y, wh, wh, null);
                 g.drawRect(x, y, wh, wh);
 
                 int offset = 35;
                 int textY = y + wh + offset;
-                Font f = new Font("Exo", Font.BOLD, 24);
                 String[] texts;
                 if (stage != -1) {
                     texts = new String[]{
                             "Save " + (i+1),
-                            "Stage: " + (stage+1),
+                            "Stage: " + (stage < 3 ? (stage+1) : "???"),
                             "Deaths: " + deaths,
                             diffOptions[diff]
                     };
                 } else {
-                    texts = new String[]{"Save " + i};
+                    texts = new String[]{"Save " + (i+1)};
                 }
                 for (int j = 0; j < texts.length; j++) {
                     String text = texts[j];
-                    Rectangle r = new Rectangle(x, textY + offset * j, wh, wh);
+                    r = new Rectangle(x, textY + offset * j, wh, wh);
                     centerTextX(g, text, r, f);
                 }
             }
         }
         else {
-            g.setFont(new Font("Exo", Font.BOLD, 72));
+            Font f = new Font("Exo", Font.BOLD, 72);
+            Rectangle r = new Rectangle(0, 150, width, height);
             g.setColor(Color.WHITE);
-            g.drawString("Choose a difficulty", 5, 72);
+            centerTextX(g, "Choose a difficulty", r, f);
 
             for (int i = 0; i < diffOptions.length; i++) {
                 if (i == current) g.setColor(new Color(150, 150, 255));
                 else g.setColor(new Color(255, 255, 255));
-                g.drawString(diffOptions[i], width / 5, height / diffOptions.length + 20 + i * 150);
+                g.drawString(diffOptions[i], 85, height / diffOptions.length + 50 + i * 150);
             }
         }
     }
 
-    public void centerTextX(Graphics g, String text, Rectangle rect, Font font) {
+    public static void centerTextX(Graphics g, String text, Rectangle rect, Font font) {
         FontMetrics metrics = g.getFontMetrics(font);
         int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
         int y = rect.y;
@@ -140,6 +149,7 @@ public class OptionsState extends GameState {
                 SaveManager save = saves[chosenSave];
                 save.setDiff(current);
                 save.setDeaths(0);
+                save.setC_deaths(0);
                 save.setStage(0);
                 save.setTime(0);
                 save.setC_stage(0);

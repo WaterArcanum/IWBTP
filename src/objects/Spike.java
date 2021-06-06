@@ -1,27 +1,22 @@
 package objects;
 
+import main.SaveManager;
 import states.PlayState;
 import states.WinState;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 public class Spike extends Polygon {
     public static int blockSize = Block.blockSize;
     private static final int thinness = 1;
 
-    private Image img;
     private int tick;
     private boolean tickUp = true;
-    private final int x;
-    private final int y;
+    private final int id;
 
-    public Spike(int x, int y, int rotation) {
-        this.x = x;
-        this.y = y;
+    public Spike(int x, int y, int rotation, int id) {
+        this.id = id;
         Random rand = new Random();
         tick = rand.nextInt(75) + 25;
 
@@ -33,44 +28,37 @@ public class Spike extends Polygon {
         int y0 = y;
         int y1 = y - (blockSize / 2);
         int y2 = y - blockSize;
-        // The spike sprite was way too ugly.
-        String pathname = "resources/imgs/spike";
+
         switch (rotation) {
             // Facing up
             case 1 -> {
                 addPoint(x0+thinness, y0); // Left point
                 addPoint(x2-thinness, y0); // Right point
                 addPoint(x1, y2+thinness*3); // Middle point
-                pathname += "up";
             }
             // Facing down
             case 2 -> {
                 addPoint(x0+thinness, y2); // Left point
                 addPoint(x2-thinness, y2); // Right point
                 addPoint(x1, y0-thinness*3); // Middle point
-                pathname += "down";
             }
             // Facing left
             case 3 -> {
                 addPoint(x0+thinness*3, y1); // Middle point
                 addPoint(x2, y2+thinness); // Upper point
                 addPoint(x2, y0-thinness); // Lower point
-                pathname += "left";
             }
             // Facing right
             case 4 -> {
                 addPoint(x2-thinness*3, y1); // Middle point
                 addPoint(x0, y2+thinness); // Upper point
                 addPoint(x0, y0-thinness); // Lower point
-                pathname += "right";
             }
         }
+    }
 
-        try {
-            img = ImageIO.read(new File(pathname+".png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public int getId() {
+        return id;
     }
 
     public void draw(Graphics g) {
@@ -126,6 +114,13 @@ public class Spike extends Polygon {
             case 3 -> {
                 g2d.setColor(Color.WHITE);
                 g2d.fill(this);
+            }
+            case 4 -> {
+                if(Map.spikesTouched.contains(id) &&
+                        new SaveManager(SaveManager.getIndex()).getDiff() == 2) {
+                    g2d.setColor(Color.WHITE);
+                    g2d.fill(this);
+                }
             }
         }
     }

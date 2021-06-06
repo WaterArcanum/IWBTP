@@ -9,7 +9,7 @@ public class AudioManager {
     private Clip clip;
 
     public AudioManager(String filename) {
-        init(filename, -20);
+        init(filename, -18);
     }
 
     public AudioManager(String filename, int gain) {

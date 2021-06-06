@@ -8,7 +8,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class Block extends Rectangle {
     public static int blockSize = 30;
@@ -24,14 +23,14 @@ public class Block extends Rectangle {
 
     private Image img;
 
-    public Block(int x, int y, int even) {
+    public Block(int x, int y) {
         this.x = x;
         this.y = y;
         Random rand = new Random();
         tickRand = rand.nextInt(75) + 25;
         setBounds(x, y, width, height);
         try {
-            String pathname = "resources/imgs/" + (even%2==0 ? "stolen.png" : "stolen.png");
+            String pathname = "resources/imgs/block.png";
             img = ImageIO.read(new File(pathname));
         } catch (IOException e) {
             e.printStackTrace();

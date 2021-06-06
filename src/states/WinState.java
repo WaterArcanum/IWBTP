@@ -1,6 +1,7 @@
 package states;
 
 import main.GamePanel;
+import main.SaveManager;
 import objects.Map;
 
 import java.awt.*;
@@ -11,6 +12,7 @@ public class WinState extends GameState {
     private final Map map;
     private long start;
     private long finish;
+    public static boolean won;
 
     public WinState(GameStateManager gsm, Map map) {
         super(gsm);
@@ -40,18 +42,22 @@ public class WinState extends GameState {
     }
 
     protected void draw(Graphics g) {
+        won = true;
         int width = GamePanel.WIDTH;
         int height = GamePanel.HEIGHT;
         map.draw(g);
         int transition1 = 1187;
         int transition2 = 2684;
-        int bgColor = 76;
-        int bgOpacity = 150;
+        int bgColor = 0;
+        int bgOpacity = 100;
         int textYOffset = 72;
-        int textXDefault = 100;
-        int textYDefault = height / 3;
         long timeElapsed = finish - start;
         // Timed text on screen
+        Font f = new Font("Exo", Font.BOLD, 26);
+        Rectangle r = new Rectangle(180, 180, 360, 360);
+        boolean notLast = PlayState.getLevel() != 4;
+        SaveManager save = new SaveManager(SaveManager.getIndex());
+        String text;
         if(timeElapsed < transition1) {
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, width, height);
@@ -63,36 +69,58 @@ public class WinState extends GameState {
         if(timeElapsed > transition2) {
             g.setColor(new Color(bgColor, bgColor, bgColor, bgOpacity));
             g.fillRect(0, 0, width, height);
-            g.setFont(new Font("Exo", Font.BOLD, 36));
+            g.setFont(f);
             g.setColor(Color.WHITE);
         }
         if(timeElapsed > 3363) {
-            g.drawString("Stage " + (PlayState.getLevel()+1) + " clear!", textXDefault, textYDefault);
+//            g.drawString("Stage " + (PlayState.getLevel()+1) + " clear!", textXDefault, textYDefault);
+            r.setBounds((int)r.getX(), (int)r.getY()+textYOffset, (int)r.getWidth(), (int)r.getHeight());
+            text = notLast ? ("Stage " + (PlayState.getLevel()+1) + " clear!") : "Sorry, I lied.";
+            OptionsState.centerTextX(g, text, r, f);
         }
         if(timeElapsed > 3838) {
-            int deaths = PlayState.getDeaths();
-            g.drawString((deaths > 1 ? deaths : "No") + " death" + (deaths != 1 ? "s" : ""), textXDefault, textYDefault + textYOffset);
+            int deaths = notLast ? PlayState.getDeaths() : save.getDeaths();
+//            g.drawString((deaths > 1 ? deaths : "No") + " death" + (deaths != 1 ? "s" : ""), textXDefault, textYDefault + textYOffset);
+            r.setBounds((int)r.getX(), (int)r.getY()+textYOffset, (int)r.getWidth(), (int)r.getHeight());
+            text = ((deaths > 1 ? deaths : "No") + " death" + (deaths != 1 ? "s" : ""));
+            OptionsState.centerTextX(g, text, r, f);
         }
         if(timeElapsed > 4312) {
-            double time = (Math.round(PlayState.getTime() * 100.0) / 100.0) / 1000;
-            g.drawString(time + " seconds", textXDefault, textYDefault + textYOffset * 2);
+            double time = notLast ? (Math.round(PlayState.getTime() * 100.0) / 100.0) / 1000 :
+                    (Math.round(save.getTime() * 100.0) / 100.0) / 1000;
+//            g.drawString(time + " seconds", textXDefault, textYDefault + textYOffset * 2);
+            r.setBounds((int)r.getX(), (int)r.getY()+textYOffset , (int)r.getWidth(), (int)r.getHeight());
+            text = time + " seconds";
+            OptionsState.centerTextX(g, text, r, f);
         }
         if(timeElapsed > 4803) {
-            g.drawString("Press any key to continue.", textXDefault, textYDefault + textYOffset * 3);
+//            g.drawString("Press any key to continue.", textXDefault, textYDefault + textYOffset * 3);
+            r.setBounds((int)r.getX(), (int)r.getY()+textYOffset, (int)r.getWidth(), (int)r.getHeight());
+            text = notLast ? "Press any key to continue." : "Congratulations, you won!";
+            OptionsState.centerTextX(g, text, r, f);
         }
-        if(timeElapsed > 5157 && timeElapsed < 8000) {
-            colorLerp(g, 5157, 8000, timeElapsed, bgColor-50, bgOpacity-50, bgColor, bgOpacity);
-            g.fillRect(0, 0, width, height);
+        if(timeElapsed > 5157) {
+            if(timeElapsed < 8000) {
+                colorLerp(g, 5157, 8000, timeElapsed, bgColor, bgOpacity - 50, bgColor, bgOpacity);
+                g.fillRect(0, 0, width, height);
+            }
+            g.setColor(new Color(0, 0, 0, bgOpacity-25));
+            g.fillRect(180, 180, 360, 360);
         }
         if(timeElapsed > 8000) {
-            g.setColor(new Color(bgColor-50, bgColor-50, bgColor-50, bgOpacity-50));
+            g.setColor(new Color(bgColor, bgColor, bgColor, bgOpacity-50));
             g.fillRect(0, 0, width, height);
         }
+        g.setColor(Color.WHITE);
+        g.drawRect(180, 180, 360, 360);
     }
 
     protected void keyPressed(int k) {
-        long timeElapsed = finish - start;
-        if(timeElapsed > 4823) PlayState.progress();
+        if(PlayState.getLevel() != 4) {
+            won = false;
+            long timeElapsed = finish - start;
+            if (timeElapsed > 4823) PlayState.progress();
+        }
     }
 
     protected void keyReleased(int k) {

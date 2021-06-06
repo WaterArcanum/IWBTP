@@ -1,6 +1,7 @@
 package objects;
 
 import main.GamePanel;
+import states.DeathState;
 
 import java.awt.*;
 import java.util.Random;
@@ -116,8 +117,10 @@ public class BackgroundRect extends Rectangle {
     }
 
     public void fade() {
-        alpha-=1;
-        if(alpha <= 0) generateBig();
+        if(alpha <= 0) {
+            if(!DeathState.dead) generateBig();
+        }
+        else alpha-=1;
     }
 
     public void move() {
@@ -128,8 +131,8 @@ public class BackgroundRect extends Rectangle {
             case 2 -> y+=step;
             case 3 -> y-=step;
         }
-        if(x > GamePanel.WIDTH*1.2 || x < -GamePanel.WIDTH*1.2 ||
-                y > GamePanel.HEIGHT*1.2 || y < -GamePanel.HEIGHT*1.2) {
+        if((x > GamePanel.WIDTH*1.2 || x < -GamePanel.WIDTH*1.2 ||
+                y > GamePanel.HEIGHT*1.2 || y < -GamePanel.HEIGHT*1.2) && !DeathState.dead) {
             generateSmall();
         }
     }

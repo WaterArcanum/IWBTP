@@ -17,6 +17,7 @@ public class DeathState extends GameState {
     private final Player player;
     private long start;
     private long finish;
+    public static boolean dead;
 
     public DeathState(GameStateManager gsm, Map map, Player player) {
         super(gsm);
@@ -33,12 +34,13 @@ public class DeathState extends GameState {
     }
 
     protected void draw(Graphics g) {
+        dead = true;
         map.draw(g);
         player.draw(g);
         long timeElapsed = finish - start;
         int height = GamePanel.HEIGHT;
         if(timeElapsed > 500) {
-            g.setColor(new Color(76, 76, 76, 150));
+            g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
             try {
                 String pathname = "resources/imgs/gameover.png";
@@ -51,6 +53,7 @@ public class DeathState extends GameState {
     }
 
     protected void keyPressed(int k) {
+        dead = false;
         if(KEY_RESET.contains(k)) PlayState.restart();
         if(KEY_EXIT.contains(k)) PlayState.exit();
     }

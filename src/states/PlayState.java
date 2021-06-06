@@ -23,7 +23,7 @@ public class PlayState extends GameState {
     };
     private static AudioManager deathSound;
     private static final AudioManager winSound =
-            new AudioManager("resources/audio/win.wav", -10);
+            new AudioManager("resources/audio/win.wav", -9);
     private static int level;
     private static int deaths;
     private static long start;
@@ -39,8 +39,9 @@ public class PlayState extends GameState {
         start = MenuState.start;
         if(MenuState.tutorial) level = 3;
         save = new SaveManager(SaveManager.getIndex());
-        if(level == 4) deathSound = new AudioManager("resources/audio/death2.wav", -10);
-        else deathSound = new AudioManager("resources/audio/death.wav", -10);
+        deaths = save.getC_deaths();
+        if(level == 4) deathSound = new AudioManager("resources/audio/death2.wav", -8);
+        else deathSound = new AudioManager("resources/audio/death.wav", -8);
         String path = "resources/maps/e" + (save.getDiff() + 1) +
                 "/map" + (level + 1) + ".map";
         map = new Map(path);
@@ -69,6 +70,10 @@ public class PlayState extends GameState {
         level += 1;
         deaths = 0;
         if(level == 3) level = 4;
+        save.setStage(level);
+        save.setC_stage(0);
+        save.setC_deaths(0);
+        save.save();
         PlayState.restart();
     }
 
@@ -91,11 +96,14 @@ public class PlayState extends GameState {
     }
 
     // Initiate death screen
-    public static void die() {
+    public static void die(int spikeId) {
         deaths++;
         bgm[level].stop(true);
         deathSound.start(false, true);
-        save.setDeaths(deaths);
+        save.setDeaths(save.getDeaths()+1);
+        save.setC_deaths(save.getC_deaths()+1);
+        save.save();
+        Map.spikesTouched.add(spikeId);
         GameStateManager.states.push(new DeathState(gsm, map, player));
     }
 
@@ -110,6 +118,7 @@ public class PlayState extends GameState {
         deathSound.stop(false);
         winSound.stop(false);
         save.save();
+        Map.spikesTouched.clear();
         GameStateManager.states.push(new MenuState(gsm));
     }
 

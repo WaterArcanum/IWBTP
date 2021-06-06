@@ -20,7 +20,8 @@ public class MenuState extends GameState {
     private AudioManager bgm;
     public static boolean tutorial;
     public static long timeElapsed;
-    private SaveManager save = new SaveManager(SaveManager.getIndex());
+    private Image img;
+    private final SaveManager save = new SaveManager(SaveManager.getIndex());
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
@@ -29,6 +30,11 @@ public class MenuState extends GameState {
     protected void init() {
         tutorial = false;
         start = System.currentTimeMillis();
+        try {
+            img = ImageIO.read(new File("resources/imgs/title.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     protected void tick() {
         long finish = System.currentTimeMillis();
@@ -52,20 +58,31 @@ public class MenuState extends GameState {
         g.setColor(new Color((int)(bgPercent * 9), (int)(bgPercent * 5), (int)(bgPercent * 95)));
         g.fillRect(0, 0, width, height);
 
+        int bgSize = 36;
+        float bgOpacityPer = WinState.percent(0, 7000, timeElapsed)/100;
+//        bgOpacityPer = 1.5f;
+        int animSpeedDelay = 15;
+        for (int i = 0; i < width/bgSize+2; i++) {
+            for (int j = 0; j < height/bgSize+2; j++) {
+                Rectangle r = new Rectangle(i*bgSize + (int)((timeElapsed / animSpeedDelay) % bgSize) - bgSize,
+                        j*bgSize + (int)((timeElapsed / animSpeedDelay) % bgSize) - bgSize, bgSize, bgSize);
+                g.setColor(new Color(255, 255, 255, (int)(bgOpacityPer * 10)));
+                g.drawRect(r.x, r.y, r.width, r.height);
+            }
+        }
+
         for (int i = 0; i < options.length; i++) {
             if(i == current) g.setColor(new Color(150, 150, 255, (int)(textPercent * 254)));
             else g.setColor(new Color(255, 255, 255, (int)(textPercent * 255)));
 
             g.setFont(new Font("Exo", Font.BOLD, 72));
-            g.drawString(options[i], width / 3, height / options.length + 20 + i * 150);
+            g.drawString(options[i], width / 3, height / options.length + 50 + i * 150);
         }
 
-        try {
-            Image img = ImageIO.read(new File("resources/imgs/title.png"));
-            g.drawImage(img, -600, 0,null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Graphics2D g2d = (Graphics2D) g;
+        float alpha = WinState.percent(0, 7000, timeElapsed)/100;
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        g2d.drawImage(img, -35, 50, 800, 146, null);
     }
 
     protected void keyPressed(int k) {

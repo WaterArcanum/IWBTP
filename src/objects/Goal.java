@@ -1,5 +1,7 @@
 package objects;
 
+import states.PlayState;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
@@ -11,8 +13,6 @@ public class Goal extends Rectangle {
     private final int x;
     private int y;
     private final int origY;
-    private final int width = blockSize;
-    private final int height = blockSize;
     private Image img;
     private int tick;
 
@@ -20,6 +20,8 @@ public class Goal extends Rectangle {
         this.x = x;
         this.y = y - 5;
         origY = y;
+        int width = blockSize;
+        int height = blockSize;
         setBounds(x, y, width, height);
 
         try {
@@ -42,7 +44,14 @@ public class Goal extends Rectangle {
                 y--;
             }
         }
-        g.setColor(Color.MAGENTA);
-        g.drawImage(img, this.x, this.y, null);
+        Graphics2D g2d = (Graphics2D)g.create();
+        float alpha = 1f;
+        switch(PlayState.getLevel()) {
+            case 0 -> alpha = 0.9f;
+            case 1 -> alpha = 0.7f;
+            case 2 -> alpha = 0.5f;
+        }
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        g2d.drawImage(img, this.x, this.y, null);
     }
 }
