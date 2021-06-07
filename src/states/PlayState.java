@@ -64,7 +64,7 @@ public class PlayState extends GameState {
 
     // Move to next level
     public static void progress() {
-        start = System.currentTimeMillis();
+        MenuState.start = System.currentTimeMillis();
         savePointId = 0;
         bgm[level].stop(false);
         level += 1;
