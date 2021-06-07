@@ -151,7 +151,6 @@ public class OptionsState extends GameState {
                 save.setDeaths(0);
                 save.setC_deaths(0);
                 save.setStage(0);
-                save.setTime(0);
                 save.setC_stage(0);
                 save.save();
                 GameStateManager.states.push(new MenuState(gsm));

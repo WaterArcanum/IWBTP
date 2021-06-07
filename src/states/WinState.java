@@ -73,28 +73,23 @@ public class WinState extends GameState {
             g.setColor(Color.WHITE);
         }
         if(timeElapsed > 3363) {
-//            g.drawString("Stage " + (PlayState.getLevel()+1) + " clear!", textXDefault, textYDefault);
             r.setBounds((int)r.getX(), (int)r.getY()+textYOffset, (int)r.getWidth(), (int)r.getHeight());
             text = notLast ? ("Stage " + (PlayState.getLevel()+1) + " clear!") : "Sorry, I lied.";
             OptionsState.centerTextX(g, text, r, f);
         }
         if(timeElapsed > 3838) {
             int deaths = notLast ? PlayState.getDeaths() : save.getDeaths();
-//            g.drawString((deaths > 1 ? deaths : "No") + " death" + (deaths != 1 ? "s" : ""), textXDefault, textYDefault + textYOffset);
             r.setBounds((int)r.getX(), (int)r.getY()+textYOffset, (int)r.getWidth(), (int)r.getHeight());
             text = ((deaths > 1 ? deaths : "No") + " death" + (deaths != 1 ? "s" : ""));
             OptionsState.centerTextX(g, text, r, f);
         }
         if(timeElapsed > 4312) {
-            double time = notLast ? (Math.round(PlayState.getTime() * 100.0) / 100.0) / 1000 :
-                    (Math.round(save.getTime() * 100.0) / 100.0) / 1000;
-//            g.drawString(time + " seconds", textXDefault, textYDefault + textYOffset * 2);
+            double time = (Math.round(PlayState.getTime() * 100.0) / 100.0) / 1000;
             r.setBounds((int)r.getX(), (int)r.getY()+textYOffset , (int)r.getWidth(), (int)r.getHeight());
             text = time + " seconds";
             OptionsState.centerTextX(g, text, r, f);
         }
         if(timeElapsed > 4803) {
-//            g.drawString("Press any key to continue.", textXDefault, textYDefault + textYOffset * 3);
             r.setBounds((int)r.getX(), (int)r.getY()+textYOffset, (int)r.getWidth(), (int)r.getHeight());
             text = notLast ? "Press any key to continue." : "Congratulations, you won!";
             OptionsState.centerTextX(g, text, r, f);

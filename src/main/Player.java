@@ -152,10 +152,6 @@ public class Player {
         x -= left ? moveSpeed : 0;
         x += right ? moveSpeed : 0;
 
-//        System.out.println("jumpDelta: " + jumpDelta + " | maxJumpDelta: " + maxJumpDelta +
-//                " | jumpTick: " + jumpTick + " | jumpSpeed: " + jumpSpeed +
-//                " | currJumpSpeed: " + currentJumpSpeed);
-
         if(!stopJump && jumpDelta < maxJumpDelta) {
             jumpDelta += 0.1;
         }

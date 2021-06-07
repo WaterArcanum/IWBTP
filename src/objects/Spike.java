@@ -76,15 +76,6 @@ public class Spike extends Polygon {
                 g2d.draw(this);
             }
             case 1 -> {
-//                if(tickUp) tick++;
-//                else tick--;
-//                if(tick >= 100) tickUp = false;
-//                if(tick <= 50) tickUp = true;
-//
-//                float percent = WinState.percent(0, 100, tick);
-//                float color = 153 * (percent/100);
-//                g2d.setColor(new Color((int)color, (int)color, (int)color, (int)color));
-//                g2d.draw(this);
                 int tickStat = Block.tickStat;
                 float percent = WinState.percent(0, 100, tickStat);
                 int color = (int) (190 * (percent/100));
@@ -92,11 +83,6 @@ public class Spike extends Polygon {
                 g2d.draw(this);
             }
             case 2 -> {
-//                g2d.setColor(new Color(255, 0, 0, 100));
-//                g2d.draw(this);
-//                g2d.setColor(new Color(168, 0, 0, 50));
-//                g2d.fill(this);
-
                 Random rand = new Random();
                 if(tickUp) {
                     if(rand.nextInt(5) > 1) tick+=2;

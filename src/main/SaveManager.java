@@ -1,8 +1,7 @@
 package main;
 
-import states.MenuState;
-
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ public class SaveManager {
             "c_stage",
             "deaths",
             "c_deaths",
-            "time",
             "diff"
     };
     private static final Map<String, String> values = new HashMap<>();
@@ -27,7 +25,6 @@ public class SaveManager {
     private int c_stage;
     private int deaths;
     private int c_deaths;
-    private int time;
     private int diff;
 
     public SaveManager(int index) {
@@ -101,7 +98,6 @@ public class SaveManager {
             c_stage = Integer.parseInt(br.readLine().split("=")[1]);
             deaths = Integer.parseInt(br.readLine().split("=")[1]);
             c_deaths = Integer.parseInt(br.readLine().split("=")[1]);
-            time = Integer.parseInt(br.readLine().split("=")[1]);
             diff = Integer.parseInt(br.readLine().split("=")[1]);
         } catch (IOException e) {
             e.printStackTrace();
@@ -115,7 +111,6 @@ public class SaveManager {
             values.put("c_stage", String.valueOf(getC_stage()));
             values.put("deaths", String.valueOf(getDeaths()));
             values.put("c_deaths", String.valueOf(getC_deaths()));
-            values.put("time", String.valueOf(getTime() + MenuState.timeElapsed));
             values.put("diff", String.valueOf(getDiff()));
             for (String key : keys) {
                 bw.write(key + "=" + values.get(key));
@@ -152,10 +147,6 @@ public class SaveManager {
         return c_deaths;
     }
 
-    public int getTime() {
-        return time;
-    }
-
     public int getDiff() {
         return diff;
     }
@@ -174,10 +165,6 @@ public class SaveManager {
 
     public void setC_deaths(int c_deaths) {
         this.c_deaths = c_deaths;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
     }
 
     public void setDiff(int diff) {
