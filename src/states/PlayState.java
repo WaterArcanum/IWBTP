@@ -70,6 +70,7 @@ public class PlayState extends GameState {
         level += 1;
         deaths = 0;
         if(level == 3) level = 4;
+        Map.spikesTouched.clear();
         save.setStage(level);
         save.setC_stage(0);
         save.setC_deaths(0);
