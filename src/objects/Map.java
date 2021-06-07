@@ -40,12 +40,6 @@ public class Map {
         deco1 = new BackgroundRect[10];
         deco0 = new BackgroundRect[10];
 
-        /*for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks[0].length; j++) {
-                blocks[i][j] = new Block(j * Block.blockSize * 5, 5 * i * Block.blockSize);
-            }
-        }*/
-
         loadMap();
     }
 
@@ -67,7 +61,6 @@ public class Map {
                 float percent = WinState.percent(0, 100, (float)tick);
                 float color = 50 * (percent/100);
                 g.setColor(new Color(0, (int)color, (int)color));
-//                g.setColor(new Color(0, 36, 90));
                 g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
                 for(BackgroundRect br : deco1) {
                     br.fade();
@@ -83,9 +76,9 @@ public class Map {
                 g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
                 g.setColor(Color.WHITE);
                 g.setFont(new Font("Exo", Font.BOLD, 15));
-                g.drawString("Welcome to IWBTP, an I Wanna Be The Guy / Delicious Fruit",
+                g.drawString("Welcome to IWBTP, an I Wanna Be The Guy / Delicious Fruit fangame",
                         50, 500);
-                g.drawString("fangame, created for a school assignment.",
+                g.drawString("created for a school assignment.",
                         50, 530);
                 g.drawString("Use arrow keys / WAD / AL / Space / Shift to move and jump around.",
                         180, 600);
@@ -142,16 +135,6 @@ public class Map {
             }
         }
         goal.draw(g);
-
-//        Spike[] spikes = {
-//            new Spike(150, 150, 1),
-//            new Spike(180, 180, 2),
-//            new Spike(210, 210, 3),
-//            new Spike(240, 240, 4),
-//        };
-//        for (int i = 0; i < 4; i++) {
-//            spikes[i].draw(g);
-//        }
     }
 
     public void loadMap() {

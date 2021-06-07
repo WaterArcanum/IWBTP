@@ -55,10 +55,23 @@ public class Player {
     private int rightTick = 0;
     private int jumpTick = 0;
     private int fallTick = 0;
+    private final Image[] imgs;
+    private final String[] imgPaths = {
+            "idle", "walk1", "walk2", "jump1", "jump2", "fall1", "fall2", "dead", "arrows"
+    };
 
     public Player(double x, double y) {
         this.x = x;
         this.y = y;
+        imgs = new Image[imgPaths.length];
+        for (int i = 0; i < imgPaths.length; i++) {
+            String path = imgPaths[i];
+            try {
+                imgs[i] = ImageIO.read(new File("resources/imgs/" + path + ".png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void tick(Block[][] b, Spike[][] s, SavePoint[][] sp, Goal g) {
@@ -179,12 +192,11 @@ public class Player {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.BLACK);
         // Facing = { 0 : LEFT || 1 : RIGHT }
         int drawX = (int)x - ((facing-1) * width);
         int drawY = (int)y;
         int drawWidth = width * ((facing * 2) + -1);
-        String pathname = "resources/imgs/";
+        int imgIndex = 0;
         if(!dead) {
             // Ticks for sprite changes
             if (left) {
@@ -192,8 +204,8 @@ public class Player {
                 if (!jumping && !falling) {
                     leftTick += 1;
                     if (leftTick == 21) leftTick = 0;
-                    if (leftTick <= 10) pathname += "walk1.png";
-                    else pathname += "walk2.png";
+                    if (leftTick <= 10) imgIndex = 1;
+                    else imgIndex = 2;
                 }
                 rightTick = 0;
             } else if (right) {
@@ -201,40 +213,31 @@ public class Player {
                 if (!jumping && !falling) {
                     rightTick += 1;
                     if (rightTick == 21) rightTick = 0;
-                    if (rightTick <= 10) pathname += "walk1.png";
-                    else pathname += "walk2.png";
+                    if (rightTick <= 10) imgIndex = 1;
+                    else imgIndex = 2;
                 }
                 leftTick = 0;
             }
             if (jumping) {
                 jumpTick += 1;
                 if (jumpTick == 9) jumpTick = 0;
-                if (jumpTick <= 4) pathname += "jump1.png";
-                else pathname += "jump2.png";
+                if (jumpTick <= 4) imgIndex = 3;
+                else imgIndex = 4;
             } else if (falling) {
                 jumpTick = 0;
                 fallTick += 1;
                 if (fallTick == 11) fallTick = 0;
-                if (fallTick <= 5) pathname += "fall1.png";
-                else pathname += "fall2.png";
+                if (fallTick <= 5) imgIndex = 5;
+                else imgIndex = 6;
             } else fallTick = 0;
-            if (pathname.charAt(pathname.length() - 1) == '/') {
-                pathname += "idle.png";
-            }
         }
         else {
-            pathname += "dead.png";
+            imgIndex = 7;
         }
-        try {
-            Image img = ImageIO.read(new File(pathname));
-            g.drawImage(img, drawX, drawY, drawWidth, height, null);
-            // Tutorial arrows
-            if(PlayState.getLevel() == 3 && PlayState.getTime() < 15000) {
-                img = ImageIO.read(new File("resources/imgs/arrows.png"));
-                g.drawImage(img, (int)x-55, (int)y-60, null);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        g.drawImage(imgs[imgIndex], drawX, drawY, drawWidth, height, null);
+        // Tutorial arrows
+        if(PlayState.getLevel() == 3 && PlayState.getTime() < 15000) {
+            g.drawImage(imgs[8], (int)x-55, (int)y-60, null);
         }
     }
 
